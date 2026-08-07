@@ -3,47 +3,90 @@
 @tailwind utilities;
 
 /* ── Fonts ─────────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-/* ── Design Tokens ──────────────────────────────────────────────── */
+/* ── Design Tokens — WCAG 2.1 AA High Contrast System ─────────── */
 :root {
-  /* Surfaces (light) */
-  --surface-0: #FAFAFA;
-  --surface-1: #FFFFFF;
-  --surface-2: #F1F5F9;
-  --surface-3: #E8EDF5;
-  --border-color: rgba(0,0,0,0.08);
+  /* Light Mode (High Contrast, Pure White Canvas) */
+  --surface-0: #FFFFFF;
+  --surface-1: #FAFAFA;
+  --surface-2: #F4F4F5;
+  --surface-3: #E4E4E7;
+  --border-color: #E4E4E7;
+  --border-strong: #D4D4D8;
 
-  /* Foreground */
-  --fg:       #0D0F1A;
-  --fg-muted: #64748B;
-  --fg-faint: #94A3B8;
+  /* Text Colors (High Contrast on White: WCAG AAA) */
+  --fg:          #09090B; /* Deep Zinc 950 (Ratio ~19:1) */
+  --fg-muted:    #3F3F46; /* Zinc 700 (Ratio ~9.5:1) */
+  --fg-faint:    #52525B; /* Zinc 600 (Ratio ~7:1) */
 
-  /* Accents */
-  --ink:  #6366F1;
-  --gold: #F59E0B;
-  --jade: #10B981;
+  /* Primary Values (High Saturation for Light Mode) */
+  --val-blue:  #1D4ED8; /* Blue 700 */
+  --val-gold:  #B45309; /* Amber 700 */
+  --val-green: #047857; /* Emerald 700 */
 
-  /* Radius */
-  --r-sm: 10px;
-  --r-md: 16px;
-  --r-lg: 24px;
-  --r-xl: 32px;
+  /* Status Badges (Light Mode) */
+  --badge-jade-bg:     #D1FAE5;
+  --badge-jade-fg:     #047857;
+  --badge-jade-border: #A7F3D0;
+
+  --badge-gold-bg:     #FEF3C7;
+  --badge-gold-fg:     #B45309;
+  --badge-gold-border: #FDE68A;
+
+  --badge-ink-bg:      #EEF2FF;
+  --badge-ink-fg:      #3730A3;
+  --badge-ink-border:  #C7D2FE;
+
+  --badge-red-bg:      #FEE2E2;
+  --badge-red-fg:      #B91C1C;
+  --badge-red-border:  #FCA5A5;
+
+  /* Card shadow */
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03);
 }
 
 .dark {
-  --surface-0: #080B14;
-  --surface-1: #0E1220;
-  --surface-2: #141828;
-  --surface-3: #1C2236;
-  --border-color: rgba(255,255,255,0.07);
+  /* Dark Mode (High-Trust Precision Aesthetic: Void Black) */
+  --surface-0: #09090B;
+  --surface-1: #18181B;
+  --surface-2: #27272A;
+  --surface-3: #3F3F46;
+  --border-color: #27272A;
+  --border-strong: #3F3F46;
 
-  --fg:       #F0F2FF;
-  --fg-muted: #7B89AC;
-  --fg-faint: #4A5578;
+  /* Text Colors (High Clarity White/Near-White) */
+  --fg:          #FAFAFA; /* Zinc 50 */
+  --fg-muted:    #A1A1AA; /* Zinc 400 */
+  --fg-faint:    #71717A; /* Zinc 500 */
+
+  /* Primary Values (High Saturation Pop on Dark Surface) */
+  --val-blue:  #60A5FA; /* Electric Blue 400 */
+  --val-gold:  #FBBF24; /* Vibrant Amber 400 */
+  --val-green: #4ADE80; /* Bright Emerald 400 */
+
+  /* Status Badges (Dark Mode) */
+  --badge-jade-bg:     rgba(16, 185, 129, 0.15);
+  --badge-jade-fg:     #4ADE80;
+  --badge-jade-border: rgba(74, 222, 128, 0.3);
+
+  --badge-gold-bg:     rgba(245, 158, 11, 0.15);
+  --badge-gold-fg:     #FBBF24;
+  --badge-gold-border: rgba(251, 191, 36, 0.3);
+
+  --badge-ink-bg:      rgba(99, 102, 241, 0.15);
+  --badge-ink-fg:      #818CF8;
+  --badge-ink-border:  rgba(129, 140, 248, 0.3);
+
+  --badge-red-bg:      rgba(239, 68, 68, 0.15);
+  --badge-red-fg:      #FCA5A5;
+  --badge-red-border:  rgba(252, 165, 165, 0.3);
+
+  /* Card shadow */
+  --card-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 4px 24px rgba(0,0,0,0.5);
 }
 
-/* ── Base ───────────────────────────────────────────────────────── */
+/* ── Base Reset & Typography ────────────────────────────────────── */
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
@@ -51,159 +94,112 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: "kern" 1, "liga" 1;
   }
 
   body {
-    background: var(--surface-0);
+    background-color: var(--surface-0);
     color: var(--fg);
     font-family: 'Space Grotesk', system-ui, sans-serif;
-    transition: background 0.25s, color 0.25s;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   ::selection {
-    background: rgba(99,102,241,0.25);
+    background: rgba(99, 102, 241, 0.3);
     color: var(--fg);
   }
 
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--surface-0); }
   ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 99px; }
 }
 
 /* ── Utilities ──────────────────────────────────────────────────── */
 @layer utilities {
-  /* Surfaces */
-  .surface-0 { background: var(--surface-0); }
-  .surface-1 { background: var(--surface-1); }
-  .surface-2 { background: var(--surface-2); }
-
-  /* Glass */
-  .glass {
-    background: rgba(255,255,255,0.02);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+  .card-base {
+    background-color: var(--surface-1);
     border: 1px solid var(--border-color);
-  }
-  .dark .glass {
-    background: rgba(14,18,32,0.72);
+    box-shadow: var(--card-shadow);
   }
 
-  /* Card */
-  .card {
-    background: var(--surface-1);
-    border: 1px solid var(--border-color);
-    border-radius: var(--r-lg);
-    box-shadow: var(--tw-shadow, 0 1px 3px rgba(0,0,0,0.06));
-  }
-
-  /* Gradients */
-  .grad-brand {
-    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-  }
-  .grad-brand-text {
-    background: linear-gradient(135deg, #818CF8 0%, #C4B5FD 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .grad-gold-text {
-    background: linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Typography */
-  .text-display {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.05;
-  }
   .text-mono {
     font-family: 'JetBrains Mono', monospace;
     font-variant-numeric: tabular-nums;
   }
+
+  .text-display {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
   .label-xs {
     font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--fg-muted);
   }
 
-  /* Borders */
-  .border-subtle  { border-color: var(--border-color); }
-  .divide-subtle > * + * { border-color: var(--border-color); }
-
-  /* Glows */
-  .glow-ink  { box-shadow: 0 0 0 1px rgba(99,102,241,0.25), 0 4px 32px rgba(99,102,241,0.18); }
-  .glow-gold { box-shadow: 0 0 0 1px rgba(245,158,11,0.25), 0 4px 24px rgba(245,158,11,0.14); }
-  .glow-jade { box-shadow: 0 0 0 1px rgba(16,185,129,0.25), 0 4px 24px rgba(16,185,129,0.14); }
-
-  /* Shimmer loader */
-  .shimmer {
-    background: linear-gradient(
-      90deg,
-      var(--surface-2) 0%,
-      var(--surface-3) 50%,
-      var(--surface-2) 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.8s linear infinite;
+  .border-subtle {
+    border-color: var(--border-color);
   }
 
-  /* Noise overlay for texture */
-  .noise::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 256px 256px;
-    pointer-events: none;
-    border-radius: inherit;
+  .border-strong {
+    border-color: var(--border-strong);
   }
 
-  /* Interactive states */
-  .interactive {
-    transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1),
-                box-shadow 0.18s ease,
-                background 0.18s ease;
-  }
-  .interactive:hover  { transform: translateY(-1px); }
-  .interactive:active { transform: translateY(0); }
-
-  /* Hover ring */
-  .ring-hover {
-    transition: box-shadow 0.2s ease;
-  }
-  .ring-hover:hover {
-    box-shadow: 0 0 0 2px var(--ink);
+  /* High-Contrast Badges */
+  .pill-jade {
+    background-color: var(--badge-jade-bg);
+    color: var(--badge-jade-fg);
+    border: 1px solid var(--badge-jade-border);
   }
 
-  /* Pill badge */
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 99px;
-    font-size: 0.75rem;
-    font-weight: 600;
+  .pill-gold {
+    background-color: var(--badge-gold-bg);
+    color: var(--badge-gold-fg);
+    border: 1px solid var(--badge-gold-border);
   }
-  .pill-ink  { background: rgba(99,102,241,0.12); color: #818CF8; border: 1px solid rgba(99,102,241,0.2); }
-  .pill-gold { background: rgba(245,158,11,0.12); color: #FCD34D; border: 1px solid rgba(245,158,11,0.2); }
-  .pill-jade { background: rgba(16,185,129,0.12); color: #34D399;  border: 1px solid rgba(16,185,129,0.2); }
-  .pill-red  { background: rgba(239,68,68,0.12);  color: #FCA5A5;  border: 1px solid rgba(239,68,68,0.2);  }
 
-  /* Separator with text */
-  .sep { display: flex; align-items: center; gap: 12px; }
-  .sep::before, .sep::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--border-color);
+  .pill-ink {
+    background-color: var(--badge-ink-bg);
+    color: var(--badge-ink-fg);
+    border: 1px solid var(--badge-ink-border);
+  }
+
+  .pill-red {
+    background-color: var(--badge-red-bg);
+    color: var(--badge-red-fg);
+    border: 1px solid var(--badge-red-border);
+  }
+
+  /* Glass Effects */
+  .glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+  }
+  .dark .glass {
+    background: rgba(18, 18, 27, 0.85);
+  }
+
+  /* Gradients */
+  .grad-brand {
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  }
+  .dark .grad-brand {
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+  }
+
+  .grad-brand-text {
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark .grad-brand-text {
+    background: linear-gradient(135deg, #818CF8 0%, #C4B5FD 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
