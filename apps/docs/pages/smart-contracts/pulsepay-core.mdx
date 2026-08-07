@@ -1,0 +1,42 @@
+# `pulsepay-core` Contract Reference
+
+**Deployed Contract ID (Testnet):** `CBH3ATY3PU7MRK54BOLEHU2ANM67LXLALNR5TQP6MR44NFKOLLEFHRZW`
+
+## Public Functions
+
+### `create_stream`
+Initializes a new payroll stream and locks total funds in the vault.
+```rust
+pub fn create_stream(
+    env: Env,
+    employer: Address,
+    worker: Address,
+    amount: i128,
+    start_time: u64,
+    end_time: u64,
+) -> u64
+```
+
+* **Auth:** Requires `employer.require_auth()`.
+* **Errors:** Returns `ContractError::InvalidTimeframe` if `end_time <= start_time`.
+
+### `withdraw`
+
+Transfers accrued funds to the worker after deducting the 0.25% protocol fee.
+
+```rust
+pub fn withdraw(env: Env, worker: Address, stream_id: u64, amount: i128)
+```
+
+* **Auth:** Requires `worker.require_auth()`.
+* **Errors:** Returns `ContractError::InsufficientAccruedBalance` if requested amount exceeds streamed entitlement.
+
+### `cancel_stream`
+
+Terminates an active stream and returns unstreamed capital to the employer.
+
+```rust
+pub fn cancel_stream(env: Env, employer: Address, stream_id: u64)
+```
+
+* **Auth:** Requires `employer.require_auth()`.
