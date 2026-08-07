@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: pulsepay-backend
+    env: node
+    buildCommand: pnpm install && pnpm --filter backend build
+    startCommand: pnpm --filter backend start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
