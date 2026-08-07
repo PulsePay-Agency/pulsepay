@@ -1,156 +1,169 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Zap, TrendingUp, ArrowUpRight, Clock, LogOut, Fingerprint, X, ChevronDown } from "lucide-react";
+import { Zap, LogOut, TrendingUp, ArrowUpRight, X, Fingerprint, Activity } from "lucide-react";
+import { useTheme } from "@/lib/theme";
+import { Sun, Moon } from "lucide-react";
 import Link from "next/link";
 
-/* ─── Live Balance Ticker ─────────────────────────── */
-function BalanceTicker({ ratePerSec }: { ratePerSec: number }) {
-  const [bal, setBal] = useState(1247.523142);
-  const last = useRef(Date.now());
-
+/* ── Ticker ─────────────────────────────────────── */
+function LiveBalance({ rate }: { rate: number }) {
+  const [v, setV] = useState(1382.219143);
+  const t = useRef(Date.now());
   useEffect(() => {
-    let raf: number;
-    const tick = () => {
+    let id: number;
+    const loop = () => {
       const now = Date.now();
-      setBal(b => b + ratePerSec * ((now - last.current) / 1000));
-      last.current = now;
-      raf = requestAnimationFrame(tick);
+      setV(b => b + rate * ((now - t.current) / 1000));
+      t.current = now;
+      id = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [ratePerSec]);
-
-  const [w, d] = bal.toFixed(6).split(".");
+    id = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(id);
+  }, [rate]);
+  const [w, d] = v.toFixed(6).split(".");
   return (
-    <div className="ticker flex items-end gap-1">
-      <span className="text-[#A78BFA] text-3xl font-semibold">$</span>
-      <span className="text-5xl md:text-6xl font-extrabold text-white">{Number(w).toLocaleString()}</span>
-      <span className="text-3xl font-bold text-[#A78BFA]">.{d}</span>
+    <div className="text-mono flex items-end gap-1 leading-none">
+      <span className="text-[var(--fg-muted)] text-2xl font-medium">$</span>
+      <span className="text-[clamp(2.5rem,6vw,4rem)] font-bold text-[var(--fg)] tracking-tight">{Number(w).toLocaleString()}</span>
+      <span className="text-2xl font-bold grad-brand-text">.{d}</span>
     </div>
   );
 }
 
-/* ─── Cash-Out Modal ──────────────────────────────── */
+/* ── Cash-out Modal ─────────────────────────────── */
 function CashOutModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(1);
   const [pct, setPct] = useState(50);
   const [anchor, setAnchor] = useState("MoneyGram");
-  const [authing, setAuthing] = useState(false);
-  const amount = (1247.52 * pct) / 100;
+  const [processing, setProcessing] = useState(false);
+
+  const total = 1382.22;
+  const amount = (total * pct) / 100;
   const fee = amount * 0.0025;
   const net = amount - fee;
 
-  const handleConfirm = async () => {
-    setAuthing(true);
+  const confirm = async () => {
+    setProcessing(true);
     try {
       const ch = new Uint8Array(32); crypto.getRandomValues(ch);
       await navigator.credentials.get({ publicKey: { challenge: ch, rpId: window.location.hostname, userVerification: "preferred" } });
     } catch {}
-    await new Promise(r => setTimeout(r, 1200));
+    await new Promise(r => setTimeout(r, 1000));
     setStep(4);
-    setAuthing(false);
+    setProcessing(false);
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="glass rounded-3xl w-full max-w-md border border-white/10 relative">
-        <button onClick={onClose} className="absolute top-4 right-4 text-[#64748B] hover:text-white transition-colors">
-          <X className="w-5 h-5" />
-        </button>
-
-        <div className="p-6 border-b border-white/5">
-          <div className="flex gap-1 mb-1">
-            {[1,2,3].map(s => (
-              <div key={s} className={`h-1 flex-1 rounded-full transition-all ${step > s ? "bg-emerald-400" : step === s ? "gradient-purple" : "bg-white/10"}`} />
-            ))}
-          </div>
-          <p className="text-xs text-[#64748B] mt-2">Step {Math.min(step,3)} of 3</p>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-end sm:items-center justify-center z-50 p-4">
+      <div className="card w-full max-w-md rounded-4xl border-subtle animate-slide-in-right shadow-lift overflow-hidden">
+        {/* Step bar */}
+        <div className="flex gap-1.5 p-5 pb-0">
+          {[1,2,3].map(s => (
+            <div
+              key={s}
+              className={`h-1 flex-1 rounded-full transition-all duration-500 ${
+                step > s ? "bg-jade-400" : step === s ? "grad-brand" : "bg-[var(--surface-3)]"
+              }`}
+            />
+          ))}
         </div>
 
         <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <p className="label-xs text-ink-400">{step < 4 ? `Step ${step} of 3` : "Complete"}</p>
+              <h3 className="text-lg font-bold text-[var(--fg)] mt-0.5">
+                {["Select Amount","Fee Preview","Confirm","Done"][step - 1]}
+              </h3>
+            </div>
+            <button onClick={onClose} className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--surface-2)] transition-all">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
           {step === 1 && (
-            <>
-              <h3 className="text-lg font-bold mb-1">Select Amount</h3>
-              <p className="text-sm text-[#64748B] mb-6">Available: $1,247.52 USDC</p>
-              <div className="grid grid-cols-4 gap-2 mb-6">
-                {[25, 50, 75, 100].map(p => (
+            <div className="space-y-5">
+              <p className="text-sm text-[var(--fg-muted)]">Available: <span className="text-mono font-semibold text-[var(--fg)]">${total.toLocaleString()} USDC</span></p>
+              <div className="grid grid-cols-4 gap-2">
+                {[25,50,75,100].map(p => (
                   <button key={p} onClick={() => setPct(p)}
-                    className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${pct === p ? "gradient-purple text-white glow-purple" : "glass-light border border-white/5 text-[#94A3B8] hover:text-white"}`}>
+                    className={`py-2.5 rounded-2xl text-sm font-semibold transition-all ${pct === p ? "grad-brand text-white glow-ink" : "bg-[var(--surface-2)] text-[var(--fg-muted)] hover:text-[var(--fg)]"}`}>
                     {p}%
                   </button>
                 ))}
               </div>
-              <div className="glass-light rounded-xl p-4 border border-white/5 mb-6">
-                <p className="text-xs text-[#64748B] mb-1">Withdrawal Amount</p>
-                <p className="text-2xl font-bold ticker">${amount.toFixed(2)}</p>
+              <div className="bg-[var(--surface-2)] rounded-2xl p-5">
+                <p className="label-xs mb-2">Amount to Withdraw</p>
+                <p className="text-mono text-3xl font-bold text-[var(--fg)]">${amount.toFixed(2)}</p>
               </div>
-              <button onClick={() => setStep(2)} className="w-full gradient-purple text-white font-semibold py-3.5 rounded-xl hover:opacity-90 transition-opacity">
-                Continue
+              <button onClick={() => setStep(2)} className="w-full grad-brand glow-ink text-white font-semibold py-3.5 rounded-2xl hover:opacity-90 interactive">
+                Continue →
               </button>
-            </>
+            </div>
           )}
 
           {step === 2 && (
-            <>
-              <h3 className="text-lg font-bold mb-1">Fee Breakdown</h3>
-              <p className="text-sm text-[#64748B] mb-6">Flat 0.25% protocol fee — no hidden charges</p>
-              <div className="space-y-3 mb-6">
+            <div className="space-y-5">
+              <div className="space-y-1">
                 {[
-                  { l: "Withdrawal Amount", v: `$${amount.toFixed(2)}`, c: "text-white" },
+                  { l: "Withdrawal Amount", v: `$${amount.toFixed(2)}`, c: "text-[var(--fg)]" },
                   { l: "Protocol Fee (0.25%)", v: `-$${fee.toFixed(4)}`, c: "text-red-400" },
-                  { l: "You Receive", v: `$${net.toFixed(4)}`, c: "text-emerald-400 text-lg font-bold" },
                 ].map(({ l, v, c }) => (
-                  <div key={l} className="flex justify-between py-2.5 border-b border-white/5 last:border-0">
-                    <span className="text-sm text-[#64748B]">{l}</span>
-                    <span className={`text-sm font-semibold ticker ${c}`}>{v}</span>
+                  <div key={l} className="flex justify-between py-3 border-b border-subtle">
+                    <span className="text-sm text-[var(--fg-muted)]">{l}</span>
+                    <span className={`text-sm font-semibold text-mono ${c}`}>{v}</span>
                   </div>
                 ))}
+                <div className="flex justify-between py-3">
+                  <span className="text-sm text-[var(--fg-muted)]">You Receive</span>
+                  <span className="text-lg font-bold text-mono text-jade-400">${net.toFixed(4)}</span>
+                </div>
               </div>
-              <p className="text-xs text-[#475569] mb-4">Select cash-out method:</p>
-              <div className="grid grid-cols-3 gap-2 mb-6">
-                {["MoneyGram", "Local Bank", "USDC"].map(a => (
-                  <button key={a} onClick={() => setAnchor(a)}
-                    className={`py-2.5 px-3 rounded-xl text-xs font-semibold transition-all ${anchor === a ? "gradient-purple text-white" : "glass-light border border-white/5 text-[#94A3B8]"}`}>
-                    {a}
-                  </button>
-                ))}
+              <div>
+                <p className="label-xs mb-3">Cash-out Method</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {["MoneyGram","Local Bank","USDC"].map(a => (
+                    <button key={a} onClick={() => setAnchor(a)}
+                      className={`py-3 rounded-2xl text-xs font-semibold transition-all ${anchor === a ? "grad-brand text-white" : "bg-[var(--surface-2)] text-[var(--fg-muted)] hover:text-[var(--fg)]"}`}>
+                      {a}
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setStep(1)} className="flex-1 glass-light border border-white/5 text-white font-semibold py-3 rounded-xl hover:bg-white/10 transition-colors">
-                  Back
-                </button>
-                <button onClick={() => setStep(3)} className="flex-1 gradient-purple text-white font-semibold py-3 rounded-xl hover:opacity-90 transition-opacity">
-                  Continue
-                </button>
+                <button onClick={() => setStep(1)} className="flex-1 bg-[var(--surface-2)] text-[var(--fg)] font-semibold py-3 rounded-2xl hover:bg-[var(--surface-3)] transition-colors">Back</button>
+                <button onClick={() => setStep(3)} className="flex-1 grad-brand glow-ink text-white font-semibold py-3 rounded-2xl hover:opacity-90 interactive">Continue →</button>
               </div>
-            </>
+            </div>
           )}
 
           {step === 3 && (
-            <>
-              <h3 className="text-lg font-bold mb-1">Confirm with Passkey</h3>
-              <p className="text-sm text-[#64748B] mb-8">Biometric verification required to authorize the withdrawal.</p>
-              <div className="glass-light rounded-2xl p-5 border border-white/5 mb-6 text-center">
-                <Fingerprint className="w-12 h-12 text-purple-400 mx-auto mb-3" />
-                <p className="text-sm text-[#64748B]">Sending <span className="text-white font-semibold">${net.toFixed(2)}</span> via <span className="text-white font-semibold">{anchor}</span></p>
+            <div className="space-y-5">
+              <div className="bg-[var(--surface-2)] rounded-3xl p-8 text-center">
+                <div className="w-16 h-16 grad-brand rounded-3xl flex items-center justify-center mx-auto mb-4 glow-ink animate-pulse2">
+                  <Fingerprint className="w-8 h-8 text-white" />
+                </div>
+                <p className="text-sm text-[var(--fg-muted)]">
+                  Sending <span className="font-bold text-[var(--fg)] text-mono">${net.toFixed(2)}</span> via <span className="font-bold text-[var(--fg)]">{anchor}</span>
+                </p>
               </div>
-              <button onClick={handleConfirm} disabled={authing}
-                className="w-full gradient-purple glow-purple text-white font-semibold py-4 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2">
+              <button onClick={confirm} disabled={processing}
+                className="w-full grad-brand glow-ink text-white font-semibold py-4 rounded-2xl hover:opacity-90 interactive disabled:opacity-50 flex items-center justify-center gap-2">
                 <Fingerprint className="w-5 h-5" />
-                {authing ? "Authorizing..." : "Authorize with Passkey"}
+                {processing ? "Authorising..." : "Confirm with Passkey"}
               </button>
-            </>
+            </div>
           )}
 
           {step === 4 && (
-            <div className="text-center py-4">
-              <div className="w-16 h-16 bg-emerald-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="w-8 h-8 text-emerald-400 text-2xl">✓</div>
+            <div className="text-center py-6">
+              <div className="w-16 h-16 bg-jade-500/15 rounded-full flex items-center justify-center mx-auto mb-5 glow-jade">
+                <span className="text-jade-400 text-2xl">✓</span>
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Withdrawal Submitted!</h3>
-              <p className="text-sm text-[#64748B] mb-6">${net.toFixed(2)} is being processed via {anchor}.</p>
-              <button onClick={onClose} className="gradient-purple text-white font-semibold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity">
+              <h3 className="text-xl font-bold text-[var(--fg)] mb-2">Submitted!</h3>
+              <p className="text-sm text-[var(--fg-muted)] mb-8">${net.toFixed(2)} is being routed via {anchor}.</p>
+              <button onClick={onClose} className="grad-brand glow-ink text-white font-semibold px-8 py-3 rounded-2xl hover:opacity-90 interactive">
                 Done
               </button>
             </div>
@@ -161,104 +174,105 @@ function CashOutModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-/* ─── Page ────────────────────────────────────────── */
+/* ── Streams data ───────────────────────────────── */
 const streams = [
-  { employer: "Acme Corp", rate: 0.001157, total: 3000, start: "Aug 1", end: "Sep 1", pct: 60 },
-  { employer: "Stellar Labs", rate: 0.002314, total: 6000, start: "Jul 15", end: "Sep 15", pct: 45 },
+  { employer: "Acme Corp",    rate: 0.001157, total: 3000, pct: 63, color: "from-ink-600 to-ink-400" },
+  { employer: "Stellar Labs", rate: 0.002314, total: 6000, pct: 46, color: "from-violet-700 to-violet-400" },
 ];
 
 const history = [
-  { date: "Aug 5", amount: 250.00, anchor: "MoneyGram", status: "Settled" },
-  { date: "Jul 28", amount: 500.00, anchor: "Local Bank", status: "Settled" },
-  { date: "Jul 15", amount: 120.50, anchor: "USDC", status: "Settled" },
+  { date: "Aug 5", amount: 250.00, method: "MoneyGram", status: "Settled" },
+  { date: "Jul 28", amount: 500.00, method: "Local Bank", status: "Settled" },
+  { date: "Jul 15", amount: 120.50, method: "USDC", status: "Settled" },
 ];
 
+/* ── Page ───────────────────────────────────────── */
 export default function WorkerDashboard() {
   const router = useRouter();
-  const [showModal, setShowModal] = useState(false);
+  const { theme, toggle } = useTheme();
+  const [cashout, setCashout] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0B0D1A]">
+    <div className="min-h-screen bg-[var(--surface-0)]">
       {/* Header */}
-      <header className="glass border-b border-white/5 px-6 h-16 flex items-center justify-between sticky top-0 z-40">
-        <Link href="/" className="flex items-center gap-2 font-bold text-base">
-          <div className="w-7 h-7 gradient-purple rounded-lg flex items-center justify-center glow-purple">
-            <Zap className="w-4 h-4 text-white" />
-          </div>
+      <header className="glass border-b border-subtle px-6 h-16 flex items-center justify-between sticky top-0 z-40">
+        <Link href="/" className="flex items-center gap-2.5 font-bold text-base tracking-tight">
+          <span className="w-7 h-7 grad-brand rounded-[10px] flex items-center justify-center glow-ink">
+            <Zap className="w-4 h-4 text-white" strokeWidth={2.5} />
+          </span>
           PulsePay
         </Link>
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 glass-light border border-white/5 rounded-full px-3 py-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs text-[#94A3B8]">Soroban Testnet</span>
+          <div className="hidden sm:flex items-center gap-2 bg-[var(--surface-2)] rounded-full px-3 py-1.5 border border-subtle">
+            <span className="w-1.5 h-1.5 rounded-full bg-jade-400 animate-pulse2" />
+            <span className="text-xs font-medium text-[var(--fg-muted)]">Soroban Testnet</span>
           </div>
-          <div className="w-8 h-8 gradient-purple rounded-full flex items-center justify-center text-white font-bold text-sm glow-purple">W</div>
-          <button onClick={() => router.push("/")} className="flex items-center gap-1.5 text-xs text-[#64748B] hover:text-white transition-colors">
-            <LogOut className="w-4 h-4" /> <span className="hidden sm:inline">Log Out</span>
+          <button onClick={toggle} className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--surface-2)] transition-all">
+            {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
+          <div className="w-8 h-8 grad-brand rounded-full flex items-center justify-center text-white font-bold text-sm glow-ink cursor-default">W</div>
+          <button onClick={() => router.push("/")} className="flex items-center gap-1.5 text-xs text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Log Out</span>
           </button>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-10">
-        {/* Balance hero */}
-        <div className="glass rounded-3xl p-8 border border-purple-500/15 mb-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-700/15 blur-[80px] rounded-full pointer-events-none" />
+      <main className="max-w-6xl mx-auto px-6 py-10 space-y-8">
+        {/* Balance Hero */}
+        <div className="card rounded-4xl p-8 noise relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-ink-500/10 blur-[80px] rounded-full pointer-events-none" />
           <div className="relative">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <p className="text-sm text-[#64748B] mb-1">Total Claimable Balance</p>
-                <BalanceTicker ratePerSec={0.003472} />
-                <p className="text-xs text-[#64748B] mt-2 flex items-center gap-1.5">
-                  <TrendingUp className="w-3 h-3 text-emerald-400" />
-                  +$0.003472/sec · 2 active streams
-                </p>
-              </div>
-            </div>
+            <p className="label-xs mb-4">Total Claimable Balance</p>
+            <LiveBalance rate={0.003472} />
+            <p className="text-sm text-[var(--fg-muted)] mt-3 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-jade-400" />
+              +$0.003472 / sec · 2 active streams
+            </p>
             <button
-              onClick={() => setShowModal(true)}
-              className="gradient-purple glow-purple text-white font-semibold px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity flex items-center gap-2"
+              onClick={() => setCashout(true)}
+              className="mt-6 grad-brand glow-ink text-white font-semibold px-7 py-3.5 rounded-2xl hover:opacity-90 interactive flex items-center gap-2"
             >
-              <ArrowUpRight className="w-5 h-5" /> Withdraw Funds
+              <ArrowUpRight className="w-4 h-4" /> Withdraw Funds
             </button>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Active Streams */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Streams */}
           <div className="lg:col-span-2 space-y-4">
-            <h2 className="font-bold text-lg">Active Streams</h2>
-            {streams.map((s) => (
-              <div key={s.employer} className="glass rounded-2xl p-5 border border-white/5 hover:border-purple-500/20 transition-all">
-                <div className="flex items-center justify-between mb-4">
+            <h2 className="font-bold text-[var(--fg)] text-lg">Active Streams</h2>
+            {streams.map(s => (
+              <div key={s.employer} className="card rounded-3xl p-6 group hover:shadow-card-dark hover:-translate-y-0.5 transition-all">
+                <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 gradient-purple rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-white font-bold bg-gradient-to-br ${s.color}`}>
                       {s.employer[0]}
                     </div>
                     <div>
-                      <p className="font-semibold text-sm text-white">{s.employer}</p>
-                      <p className="text-xs text-[#64748B]">{s.start} → {s.end}</p>
+                      <p className="font-semibold text-[var(--fg)]">{s.employer}</p>
+                      <p className="text-xs text-[var(--fg-faint)] text-mono">${s.rate.toFixed(6)}/sec</p>
                     </div>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Streaming
+                  <span className="pill pill-jade">
+                    <span className="w-1.5 h-1.5 rounded-full bg-jade-400 animate-pulse" />
+                    Streaming
                   </span>
                 </div>
-                <div className="grid grid-cols-3 gap-3 mb-4">
-                  <div className="glass-light rounded-xl p-3 border border-white/5 text-center">
-                    <p className="text-sm font-bold ticker text-white">${s.total.toLocaleString()}</p>
-                    <p className="text-xs text-[#64748B] mt-0.5">Total</p>
-                  </div>
-                  <div className="glass-light rounded-xl p-3 border border-white/5 text-center">
-                    <p className="text-sm font-bold ticker text-[#A78BFA]">${s.rate.toFixed(6)}</p>
-                    <p className="text-xs text-[#64748B] mt-0.5">Per Second</p>
-                  </div>
-                  <div className="glass-light rounded-xl p-3 border border-white/5 text-center">
-                    <p className="text-sm font-bold ticker text-cyan-400">{s.pct}%</p>
-                    <p className="text-xs text-[#64748B] mt-0.5">Elapsed</p>
-                  </div>
+                <div className="grid grid-cols-3 gap-3 mb-5">
+                  {[
+                    { l: "Total",  v: `$${s.total.toLocaleString()}`, c: "text-[var(--fg)]" },
+                    { l: "Rate",   v: `$${s.rate.toFixed(6)}/s`,      c: "grad-brand-text" },
+                    { l: "Elapsed", v: `${s.pct}%`,                    c: "text-jade-400" },
+                  ].map(({ l, v, c }) => (
+                    <div key={l} className="bg-[var(--surface-2)] rounded-2xl p-3.5 text-center">
+                      <p className={`text-mono text-sm font-bold ${c}`}>{v}</p>
+                      <p className="text-[10px] text-[var(--fg-faint)] mt-1 uppercase tracking-wide">{l}</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
-                  <div className="h-full gradient-purple rounded-full transition-all" style={{ width: `${s.pct}%` }} />
+                <div className="h-2 rounded-full bg-[var(--surface-3)] overflow-hidden">
+                  <div className={`h-full rounded-full bg-gradient-to-r ${s.color} transition-all`} style={{ width: `${s.pct}%` }} />
                 </div>
               </div>
             ))}
@@ -266,37 +280,37 @@ export default function WorkerDashboard() {
 
           {/* Sidebar */}
           <div className="space-y-4">
-            <h2 className="font-bold text-lg">Withdrawal History</h2>
-            {history.map((h) => (
-              <div key={h.date} className="glass rounded-2xl p-4 border border-white/5 flex items-center justify-between">
+            <h2 className="font-bold text-[var(--fg)] text-lg">History</h2>
+            {history.map(h => (
+              <div key={h.date} className="card rounded-2xl p-4 flex items-center justify-between group hover:shadow-card-dark transition-all">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center">
-                    <ArrowUpRight className="w-4 h-4 text-emerald-400" />
+                  <div className="w-8 h-8 bg-jade-500/12 rounded-xl flex items-center justify-center">
+                    <ArrowUpRight className="w-4 h-4 text-jade-400" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white">{h.anchor}</p>
-                    <p className="text-xs text-[#64748B]">{h.date}</p>
+                    <p className="text-sm font-semibold text-[var(--fg)]">{h.method}</p>
+                    <p className="text-xs text-[var(--fg-faint)]">{h.date}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-bold ticker text-white">-${h.amount.toFixed(2)}</p>
-                  <p className="text-xs text-emerald-400">{h.status}</p>
+                  <p className="text-sm font-bold text-mono text-[var(--fg)]">-${h.amount.toFixed(2)}</p>
+                  <p className="text-xs text-jade-400">{h.status}</p>
                 </div>
               </div>
             ))}
 
-            {/* Quick Stats */}
-            <div className="glass rounded-2xl p-5 border border-white/5 mt-2">
-              <h3 className="text-sm font-semibold mb-4">Monthly Summary</h3>
+            {/* Summary card */}
+            <div className="card rounded-3xl p-5">
+              <h3 className="text-sm font-semibold text-[var(--fg)] mb-4">Monthly Summary</h3>
               {[
                 { l: "Total Streamed", v: "$9,000.00" },
-                { l: "Withdrawn", v: "$870.50" },
-                { l: "Protocol Fees", v: "$2.18" },
-                { l: "Net Received", v: "$868.32" },
+                { l: "Withdrawn",      v: "$870.50" },
+                { l: "Protocol Fees",  v: "$2.18" },
+                { l: "Net Received",   v: "$868.32" },
               ].map(({ l, v }) => (
-                <div key={l} className="flex justify-between py-2 border-b border-white/5 last:border-0">
-                  <span className="text-xs text-[#64748B]">{l}</span>
-                  <span className="text-xs font-semibold ticker text-white">{v}</span>
+                <div key={l} className="flex justify-between py-2.5 border-b border-subtle last:border-0">
+                  <span className="text-xs text-[var(--fg-muted)]">{l}</span>
+                  <span className="text-xs font-semibold text-mono text-[var(--fg)]">{v}</span>
                 </div>
               ))}
             </div>
@@ -304,7 +318,7 @@ export default function WorkerDashboard() {
         </div>
       </main>
 
-      {showModal && <CashOutModal onClose={() => setShowModal(false)} />}
+      {cashout && <CashOutModal onClose={() => setCashout(false)} />}
     </div>
   );
 }
