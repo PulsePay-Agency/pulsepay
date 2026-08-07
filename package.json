@@ -1,0 +1,22 @@
+{
+  "name": "pulsepay",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "description": "PulsePay - Streaming payments on Stellar Soroban",
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "clean": "turbo clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.0.0",
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.17.0",
+    "pnpm": ">=9.0.0"
+  }
+}
