@@ -1,0 +1,24 @@
+# Economic Model & Formulas
+
+## Streaming Accrual Formula
+Accrual is calculated strictly on-chain using ledger timestamps ($T_{\text{now}}$). Floating-point math is strictly forbidden in Soroban; all calculations use integer division.
+
+$$\text{Accrued Amount} = \frac{\text{Total Stream Amount} \times (T_{\text{now}} - T_{\text{start}})}{T_{\text{end}} - T_{\text{start}}}$$
+
+Where:
+- $T_{\text{start}}$: Ledger timestamp when the stream begins.
+- $T_{\text{end}}$: Ledger timestamp when the stream completes.
+- $T_{\text{now}}$: Current ledger timestamp ($\min(T_{\text{now}}, T_{\text{end}})$).
+
+## Protocol Fee Calculation
+PulsePay charges a flat **0.25% (25 Basis Points)** fee on worker withdrawals.
+
+$$\text{Fee} = \frac{\text{Withdrawal Amount} \times 25}{10000}$$
+$$\text{Worker Net Payout} = \text{Withdrawal Amount} - \text{Fee}$$
+
+Fee proceeds transfer automatically to the protocol multisig account (`G_YOUR_MULTISIG_ADDRESS`).
+
+## Cancellation & Clawback Rules
+When an employer cancels a stream prior to $T_{\text{end}}$:
+1. Already accrued funds ($\text{Accrued Amount} - \text{Total Previously Withdrawn}$) remain locked in the vault, instantly claimable by the worker.
+2. Unstreamed funds ($\text{Total Stream Amount} - \text{Accrued Amount}$) are refunded to the employer address.
