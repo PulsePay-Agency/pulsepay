@@ -1,0 +1,16 @@
+# Stream Lifecycle
+
+## 1. Creation
+An employer initializes a stream by invoking the `create_stream` function. The total USDC payload is immediately deposited and locked into the PulsePay vault. The stream transitions to the **Active** state.
+
+## 2. Accrual
+While **Active**, the stream unlocks capital on a continuous, per-second basis aligned with the Stellar ledger timestamp. Accrual does not require transaction execution; it is deterministically calculated by reading state.
+
+## 3. Withdrawal
+Workers can invoke `withdraw` at any point prior to stream expiration. The contract recalculates the worker's accrued entitlement, subtracts previous withdrawals, deducts the protocol fee, and executes the transfer. The stream remains **Active**.
+
+## 4. Cancellation (Optional)
+Employers can invoke `cancel_stream`. This halts future accrual, refunds the unearned principal to the employer, and transitions the stream to **Canceled**. The worker can still withdraw any previously accrued, unwithdrawn balance.
+
+## 5. Expiration
+Once the current ledger timestamp exceeds `end_time`, the stream is fully vested. It transitions to **Completed**.
