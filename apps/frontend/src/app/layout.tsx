@@ -1,25 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import { ThemeProvider } from "@/lib/theme";
 
 export const metadata: Metadata = {
-  title: "PulsePay",
-  description: "Streaming payments on Stellar Soroban",
+  title: "PulsePay — Real-Time Global Payroll on Soroban",
+  description: "Stream wages per ledger second. Cash out globally via SEP-24 anchors. Built on Stellar Soroban.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
-      <body className={inter.className}>
-        <main className="min-h-screen bg-background text-foreground flex flex-col">
-          {children}
-        </main>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body className="min-h-screen bg-[var(--surface-0)] text-[var(--fg)]">
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
