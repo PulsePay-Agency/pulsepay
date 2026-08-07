@@ -1,0 +1,13 @@
+# Worker Cash-Out
+
+## Ticker Accrual
+Workers view their real-time balance via the dashboard. The frontend polls the initial contract state (`get_claimable_balance`), calculates the rate based on the start and end ledger times, and utilizes a `requestAnimationFrame` loop. This interpolates the balance natively at 60 FPS without invoking continuous network requests.
+
+## SEP-24 Off-Ramps
+When workers opt to withdraw, they trigger the SEP-24 protocol. 
+1. PulsePay executes the Soroban `withdraw` transaction, receiving USDC to the worker's wallet.
+2. The UI queries the chosen anchor's `.well-known/stellar.toml` file.
+3. PulsePay authenticates via SEP-10 and executes a POST request to the SEP-24 `/transactions/withdraw/interactive` endpoint.
+
+## Local Currency Conversion
+The anchor provides a localized, interactive webview. The worker specifies their bank details, the anchor burns/transfers the USDC on Stellar, and initiates a domestic bank transfer directly to the worker's fiat account.
