@@ -167,9 +167,9 @@ export default function LandingPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="pill-ink inline-flex items-center gap-2 mb-6 px-3.5 py-1 rounded-full text-xs font-bold">
-            <span className="w-2 h-2 rounded-full bg-indigo-600 dark:bg-indigo-400 animate-pulse" />
-            Live on Stellar Soroban Testnet
+          <div className="pill-ink inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-full text-xs font-bold border border-subtle shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Live on Soroban Testnet · XLM & USDC Streams</span>
           </div>
 
           <h1 className="text-display text-4xl sm:text-5xl font-extrabold text-fg mb-6 leading-tight">
@@ -185,13 +185,13 @@ export default function LandingPage() {
           <div className="flex flex-wrap gap-4">
             <Link
               href="/login?role=employer"
-              className="grad-brand text-white font-bold px-6 py-3.5 rounded-xl hover:opacity-90 transition-opacity flex items-center gap-2 shadow-md"
+              className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold px-6 py-3.5 rounded-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 shadow-lg shadow-indigo-500/25"
             >
               Employer Portal <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/login?role=worker"
-              className="bg-surface-2 border border-strong text-fg font-bold px-6 py-3.5 rounded-xl hover:bg-surface-3 transition-colors flex items-center gap-2"
+              className="bg-surface-2/80 hover:bg-surface-3 border border-subtle backdrop-blur-md text-fg font-bold px-6 py-3.5 rounded-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 shadow-sm"
             >
               Worker Portal <ChevronRight className="w-4 h-4" />
             </Link>
