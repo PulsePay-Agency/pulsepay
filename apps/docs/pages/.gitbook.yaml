@@ -1,0 +1,4 @@
+root: ./
+structure:
+  readme: index.mdx
+  summary: SUMMARY.md
