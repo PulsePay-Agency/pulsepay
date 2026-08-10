@@ -1,19 +1,19 @@
 # Table of Contents
 
-* [Introduction](pages/index.mdx)
+* [Introduction](pages/introduction.md)
 
 ## Protocol Mechanics
-* [Stream Lifecycle](pages/protocol-mechanics/stream-lifecycle.mdx)
-* [Economic Model](pages/protocol-mechanics/economic-model.mdx)
+* [Stream Lifecycle](pages/protocol-mechanics/stream-lifecycle.md)
+* [Economic Model & Fees](pages/protocol-mechanics/economic-model.md)
 
 ## Smart Contracts
-* [PulsePay Core](pages/smart-contracts/pulsepay-core.mdx)
-* [Storage & TTL Management](pages/smart-contracts/storage-ttl.mdx)
+* [PulsePay Core Contract](pages/smart-contracts/pulsepay-core.md)
+* [Storage & TTL Management](pages/smart-contracts/storage-ttl.md)
 
 ## User Guides
-* [Employer Onboarding](pages/user-guides/employer-onboarding.mdx)
-* [Worker Cash-Out Flow](pages/user-guides/worker-cashout.mdx)
+* [Employer Onboarding](pages/user-guides/employer-onboarding.md)
+* [Worker Cash-Out Flow](pages/user-guides/worker-cashout.md)
 
 ## Developer SDK
-* [Local Environment Setup](pages/developer-sdk/local-setup.mdx)
-* [TypeScript Contract Client](pages/developer-sdk/contract-client.mdx)
+* [Local Setup & Development](pages/developer-sdk/local-setup.md)
+* [TypeScript Contract Client](pages/developer-sdk/contract-client.md)
