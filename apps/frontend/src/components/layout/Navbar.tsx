@@ -19,7 +19,7 @@ export default function Navbar() {
   const links = [
     { href: "/#features", label: "Features" },
     { href: "/#how-it-works", label: "Protocol" },
-    { href: "/docs", label: "Documentation" },
+    { href: "https://oobayemi.gitbook.io/pulsepay", label: "Documentation", external: true },
   ];
 
   return (
@@ -44,15 +44,27 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-1">
-          {links.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="px-4 py-2 rounded-xl text-sm font-semibold text-fg-muted hover:text-fg hover:bg-surface-2 transition-all duration-150"
-            >
-              {label}
-            </Link>
-          ))}
+          {links.map(({ href, label, external }) =>
+            external ? (
+              <a
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-xl text-sm font-semibold text-fg-muted hover:text-fg hover:bg-surface-2 transition-all duration-150"
+              >
+                {label}
+              </a>
+            ) : (
+              <Link
+                key={href}
+                href={href}
+                className="px-4 py-2 rounded-xl text-sm font-semibold text-fg-muted hover:text-fg hover:bg-surface-2 transition-all duration-150"
+              >
+                {label}
+              </Link>
+            )
+          )}
         </div>
 
         {/* Right side */}
@@ -106,16 +118,29 @@ export default function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden glass border-t border-subtle px-6 py-4 space-y-2 overflow-hidden"
           >
-            {links.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setOpen(false)}
-                className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-fg-muted hover:text-fg hover:bg-surface-2 transition-all"
-              >
-                {label}
-              </Link>
-            ))}
+            {links.map(({ href, label, external }) =>
+              external ? (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                  className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-fg-muted hover:text-fg hover:bg-surface-2 transition-all"
+                >
+                  {label}
+                </a>
+              ) : (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setOpen(false)}
+                  className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-fg-muted hover:text-fg hover:bg-surface-2 transition-all"
+                >
+                  {label}
+                </Link>
+              )
+            )}
             <div className="pt-2 border-t border-subtle">
               <Link
                 href="/login"
