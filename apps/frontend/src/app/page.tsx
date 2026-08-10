@@ -8,29 +8,27 @@ import {
 import Navbar from "@/components/layout/Navbar";
 import { motion } from "framer-motion";
 
-/* ── Live Ticker ────────────────────────────────── */
-function Ticker({ base, ratePerSec }: { base: number; ratePerSec: number }) {
+/* ── Live Balance Counter (2 Decimal Places) ────────── */
+function BalanceDisplay({ base = 14383.83 }: { base?: number }) {
   const [val, setVal] = useState(base);
-  const t = useRef(Date.now());
 
   useEffect(() => {
-    let id: number;
-    const loop = () => {
-      const now = Date.now();
-      setVal(v => v + ratePerSec * ((now - t.current) / 1000));
-      t.current = now;
-      id = requestAnimationFrame(loop);
-    };
-    id = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(id);
-  }, [ratePerSec]);
+    const interval = setInterval(() => {
+      setVal((v) => v + 0.01);
+    }, 2160); // subtle +0.01 increment every ~2.1s
+    return () => clearInterval(interval);
+  }, []);
 
-  const [w, d] = val.toFixed(6).split(".");
+  const formatted = val.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
   return (
-    <div className="text-mono flex items-end gap-0.5 leading-none">
+    <div className="text-mono tabular-nums flex items-baseline gap-1 leading-none">
       <span className="text-fg-muted text-2xl font-bold">$</span>
-      <span className="text-4xl sm:text-5xl font-extrabold text-fg tracking-tight">{Number(w).toLocaleString()}</span>
-      <span className="text-2xl font-bold text-val-blue">.{d}</span>
+      <span className="text-4xl sm:text-5xl font-extrabold text-fg tracking-tight">{formatted}</span>
+      <span className="text-xs font-semibold text-val-blue px-2 py-0.5 rounded-md bg-blue-500/10 ml-2">USDC</span>
     </div>
   );
 }
@@ -47,8 +45,11 @@ function HeroCard() {
       <div className="card-base p-7 rounded-3xl border border-subtle shadow-xl space-y-5">
         <div className="flex items-center justify-between">
           <div>
-            <span className="label-xs font-bold text-fg-muted mb-1 block">Claimable Balance</span>
-            <Ticker base={14382.218} ratePerSec={0.00463} />
+            <div className="flex items-center gap-2 mb-1">
+              <span className="label-xs font-bold text-fg-muted">Claimable Balance</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            </div>
+            <BalanceDisplay base={14383.83} />
           </div>
           <div className="w-11 h-11 grad-brand rounded-2xl flex items-center justify-center text-white shadow-md">
             <Activity className="w-5 h-5" />
