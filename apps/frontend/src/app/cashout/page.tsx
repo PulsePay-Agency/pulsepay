@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Building2, Zap, ArrowLeft, Sun, Moon } from "lucide-react";
+import { CheckCircle2, Building2, ArrowLeft, Sun, Moon } from "lucide-react";
+import { PulsePayLogo } from "@/components/ui/PulsePayLogo";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/lib/theme";
 import Link from "next/link";
@@ -50,9 +51,9 @@ export default function CashOutPage() {
           className="flex items-center gap-2 text-sm font-bold text-fg-muted hover:text-fg transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="w-6 h-6 grad-brand rounded-lg flex items-center justify-center text-white text-xs shadow-sm">
-            <Zap className="w-3.5 h-3.5" />
-          </span>
+          <div className="w-7 h-7 rounded-lg bg-black/90 p-0.5 border border-emerald-500/20 shadow-sm flex items-center justify-center">
+            <PulsePayLogo className="w-full h-full" />
+          </div>
           <span>PulsePay</span>
         </Link>
 

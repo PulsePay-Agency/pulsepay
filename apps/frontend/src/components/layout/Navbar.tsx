@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X, Sun, Moon, Zap } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "@/lib/theme";
 import { motion, AnimatePresence } from "framer-motion";
+import { PulsePayLogo } from "@/components/ui/PulsePayLogo";
 
 export default function Navbar() {
   const { theme, toggle } = useTheme();
@@ -36,9 +37,9 @@ export default function Navbar() {
           href="/"
           className="flex items-center gap-2.5 font-display font-bold text-lg tracking-tight group"
         >
-          <span className="w-8 h-8 grad-brand rounded-xl flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
-            <Zap className="w-4 h-4" strokeWidth={2.5} />
-          </span>
+          <div className="w-8 h-8 rounded-xl bg-black/90 p-1 border border-emerald-500/20 shadow-sm group-hover:scale-105 transition-transform flex items-center justify-center">
+            <PulsePayLogo className="w-full h-full" />
+          </div>
           <span className="text-fg">PulsePay</span>
         </Link>
 

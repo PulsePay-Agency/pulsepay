@@ -5,6 +5,7 @@ import { Fingerprint, Zap, Building2, User, Sun, Moon, ArrowLeft } from "lucide-
 import { useTheme } from "@/lib/theme";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { PulsePayLogo } from "@/components/ui/PulsePayLogo";
 
 function LoginForm() {
   const router = useRouter();
@@ -50,9 +51,9 @@ function LoginForm() {
           className="flex items-center gap-2 text-sm font-bold text-fg-muted hover:text-fg transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="w-6 h-6 grad-brand rounded-lg flex items-center justify-center text-white text-xs shadow-sm">
-            <Zap className="w-3.5 h-3.5" />
-          </span>
+          <div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-xs shadow-sm">
+            <PulsePayLogo className="w-full h-full" />
+          </div>
           <span>PulsePay</span>
         </Link>
 

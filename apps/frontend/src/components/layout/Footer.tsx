@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Zap } from "lucide-react";
+import { PulsePayLogo } from "@/components/ui/PulsePayLogo";
 
 export default function Footer() {
   return (
@@ -7,8 +7,8 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
         <div className="col-span-2 md:col-span-1">
           <div className="flex items-center gap-2 font-bold text-lg mb-4">
-            <div className="w-7 h-7 gradient-purple rounded-lg flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 rounded-xl bg-black/90 p-1 border border-emerald-500/20 shadow-sm flex items-center justify-center">
+              <PulsePayLogo className="w-full h-full" />
             </div>
             <span>PulsePay</span>
           </div>
