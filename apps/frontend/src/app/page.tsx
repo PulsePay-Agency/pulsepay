@@ -7,8 +7,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { motion } from "framer-motion";
-
-/* ── Live Balance Counter (2 Decimal Places) ────────── */
+import { HeroSparkline } from "@/components/hero/HeroSparkline";
 function BalanceDisplay({ base = 14383.83 }: { base?: number }) {
   const [val, setVal] = useState(base);
 
@@ -40,7 +39,7 @@ function HeroCard() {
       initial={{ opacity: 0, scale: 0.96, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="relative"
+      className="relative w-full max-w-md mx-auto lg:max-w-none space-y-4"
     >
       <div className="card-base p-7 rounded-3xl border border-subtle shadow-xl space-y-5">
         <div className="flex items-center justify-between">
@@ -57,9 +56,9 @@ function HeroCard() {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="pill-jade inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold">
+          <span className="pill-jade inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tabular-nums">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse" />
-            +$0.004630 / sec
+            +$0.0046 / sec
           </span>
           <span className="pill-ink inline-flex items-center px-3 py-1 rounded-full text-xs font-bold">
             2 active streams
@@ -79,8 +78,8 @@ function HeroCard() {
 
         <div className="space-y-2 pt-1">
           {[
-            { name: "Acme Corp", amount: "+$8,000", status: "Streaming" },
-            { name: "Stellar Labs", amount: "+$6,000", status: "Streaming" },
+            { name: "Acme Corp", amount: "+$8,000.00", status: "Streaming" },
+            { name: "Stellar Labs", amount: "+$6,383.83", status: "Streaming" },
           ].map(({ name, amount, status }) => (
             <div key={name} className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-surface-2 border border-subtle">
               <div className="flex items-center gap-3">
@@ -90,13 +89,16 @@ function HeroCard() {
                 <span className="text-sm font-bold text-fg">{name}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-extrabold text-mono text-val-green">{amount}</span>
+                <span className="text-sm font-extrabold text-mono tabular-nums text-val-green">{amount}</span>
                 <span className="pill-jade text-[10px] font-bold px-2 py-0.5 rounded-full">{status}</span>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Sparkline Rate & XLM Card */}
+      <HeroSparkline />
     </motion.div>
   );
 }
