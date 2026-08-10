@@ -17,51 +17,56 @@ export function PulsePayLogo({ className = "w-8 h-8", size }: PulsePayLogoProps)
       style={style}
     >
       <defs>
-        <linearGradient id="pulsepay-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+        <linearGradient id="pp-react-g" x1="0" y1="200" x2="200" y2="0" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#00FF9D" />
           <stop offset="50%" stopColor="#00E5FF" />
           <stop offset="100%" stopColor="#00A3FF" />
         </linearGradient>
-        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+        <filter id="pp-glow" x="-30%" y="-30%" width="160%" height="160%">
           <feGaussianBlur stdDeviation="4" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
       </defs>
 
-      {/* Main P Outer Frame */}
+      {/* Background */}
+      <rect width="200" height="200" rx="46" fill="#080C13" />
+      <rect x="2" y="2" width="196" height="196" rx="44" fill="none" stroke="url(#pp-react-g)" strokeWidth="1" strokeOpacity="0.18" />
+
+      {/* P — vertical stem */}
+      <rect x="58" y="38" width="14" height="124" rx="7" fill="url(#pp-react-g)" filter="url(#pp-glow)" />
+
+      {/* P — top bar */}
+      <rect x="68" y="38" width="58" height="14" rx="7" fill="url(#pp-react-g)" filter="url(#pp-glow)" />
+
+      {/* P — curved right bump */}
       <path
-        d="M 68 36 H 130 C 162 36 162 104 130 104 H 98 V 118 L 68 144 V 36 Z"
-        stroke="url(#pulsepay-grad)"
+        d="M 126 52 C 152 52 152 104 126 104"
+        stroke="url(#pp-react-g)"
         strokeWidth="14"
         strokeLinecap="round"
-        strokeLinejoin="round"
+        fill="none"
+        filter="url(#pp-glow)"
       />
 
-      {/* P Inner Loop Cutout */}
+      {/* P — middle bar */}
+      <rect x="68" y="97" width="58" height="14" rx="7" fill="url(#pp-react-g)" filter="url(#pp-glow)" />
+
+      {/* ECG Pulse Wave */}
       <path
-        d="M 98 62 H 125 C 142 62 142 80 125 80 H 98 V 62 Z"
-        stroke="url(#pulsepay-grad)"
-        strokeWidth="10"
+        d="M 48 148 L 70 148 L 82 124 L 96 172 L 110 118 L 124 148 L 152 148"
+        stroke="url(#pp-react-g)"
+        strokeWidth="9"
         strokeLinecap="round"
         strokeLinejoin="round"
+        fill="none"
+        filter="url(#pp-glow)"
       />
 
-      {/* Pulse ECG Wave Overlay */}
-      <path
-        d="M 40 96 H 82 L 94 66 L 108 134 L 122 76 L 134 104 L 146 96 H 160"
-        stroke="url(#pulsepay-grad)"
-        strokeWidth="12"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      {/* Pulse node dot */}
+      <circle cx="152" cy="148" r="5.5" fill="url(#pp-react-g)" filter="url(#pp-glow)" />
     </svg>
-  );
-}
-
-export function PulsePayAppIcon({ className = "w-10 h-10" }: { className?: string }) {
-  return (
-    <div className={`relative rounded-2xl bg-black/90 p-2 border border-emerald-500/20 shadow-lg flex items-center justify-center ${className}`}>
-      <PulsePayLogo className="w-full h-full" />
-    </div>
   );
 }
