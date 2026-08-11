@@ -6,6 +6,8 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { PulsePayLogo } from "@/components/ui/PulsePayLogo";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { WalletAddressChip } from "@/components/ui/WalletAddressChip";
+import { clearAuthSession } from "@/lib/auth";
 
 /* ── Accrued balance (static — no fake ticking counters) ── */
 function AccruedBalance({ amount }: { amount: number }) {
@@ -239,6 +241,7 @@ export default function WorkerDashboard() {
           <span>PulsePay</span>
         </Link>
         <div className="flex items-center gap-3">
+          <WalletAddressChip />
           <div className="hidden sm:flex items-center gap-2 bg-bg-sunken rounded-full px-3 py-1 border border-border">
             <span className="w-2 h-2 rounded-full bg-signal animate-master-pulse-scale" />
             <span className="text-xs font-semibold text-fg-muted">Stellar Soroban Testnet</span>
@@ -248,7 +251,10 @@ export default function WorkerDashboard() {
             W
           </div>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => {
+              clearAuthSession();
+              router.push("/");
+            }}
             className="flex items-center gap-1.5 text-xs font-semibold text-fg-muted hover:text-fg transition-colors"
           >
             <LogOut className="w-4 h-4" />

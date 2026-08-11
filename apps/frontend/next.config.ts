@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["contract-client", "utils"],
+  transpilePackages: ["contract-client", "utils", "@stellar/freighter-api"],
   async redirects() {
     return [
       {

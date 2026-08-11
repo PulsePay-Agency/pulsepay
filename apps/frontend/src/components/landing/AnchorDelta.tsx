@@ -44,13 +44,12 @@ function AnchorCard({ name, region, asset, badge, isHovered, onHover, onLeave }:
       onFocus={onHover}
       onBlur={handleMouseLeave}
       className={`panel p-6 rounded-2xl transition-shadow duration-300 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-        isHovered ? "border-border-strong shadow-lg -translate-y-1" : ""
+        isHovered ? "border-border-strong shadow-lg" : ""
       }`}
       style={{
         transform: isHovered
           ? `translate3d(${transform.x}px, ${transform.y - 4}px, 0)`
           : "translate3d(0, 0, 0)",
-        borderColor: isHovered ? "var(--border-strong)" : undefined,
       }}
     >
       <div className="flex items-center justify-between mb-4">
@@ -79,7 +78,7 @@ function AnchorCard({ name, region, asset, badge, isHovered, onHover, onLeave }:
   );
 }
 
-/* ── Section 5: Anchor River Continuation (The Delta) ─────────────────── */
+/* ── Section 5: Global cash-out anchors ─────────────────────────────── */
 export default function AnchorDelta() {
   const [activeAnchor, setActiveAnchor] = useState<number | null>(null);
 
@@ -93,52 +92,21 @@ export default function AnchorDelta() {
   ];
 
   return (
-    <section className="py-24 px-6 max-w-7xl mx-auto relative overflow-hidden">
+    <section className="py-24 px-6 max-w-7xl mx-auto relative">
       <SectionReveal className="text-center max-w-3xl mx-auto mb-16 space-y-4">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-bg-sunken text-accent text-xs font-semibold border border-border">
           <Globe className="w-3.5 h-3.5" />
-          The Global Delta
+          Global off-ramps
         </div>
         <h2 className="text-4xl lg:text-5xl font-bold tracking-tight text-fg">
-          Cash out in local currency. <br />
-          <span
-            className="bg-clip-text text-transparent"
-            style={{
-              backgroundImage: "linear-gradient(90deg, var(--river-a), var(--river-b))",
-            }}
-          >
-            Anywhere the river reaches.
-          </span>
+          Cash out in local currency.{" "}
+          <span className="text-accent">Wherever you work.</span>
         </h2>
         <p className="text-fg-muted text-base leading-relaxed">
-          Soroban streams connect with Stellar SEP-24 anchors to convert digital value into
-          physical cash or local bank accounts.
+          Claimed wages convert through Stellar SEP-24 anchors into bank deposits, mobile money,
+          or cash pickup — without neon diagrams.
         </p>
       </SectionReveal>
-
-      <div className="w-full h-24 mb-6 relative">
-        <svg viewBox="0 0 1000 100" className="w-full h-full overflow-visible" fill="none" aria-hidden>
-          {[100, 300, 500, 700, 900].map((x, i) => (
-            <path
-              key={x}
-              d={`M 500 0 Q 500 50 ${x} 100`}
-              stroke="url(#delta-grad)"
-              strokeWidth={activeAnchor === i || activeAnchor === null ? 3 : 2}
-              strokeOpacity={
-                activeAnchor === null ? 0.4 : activeAnchor === i ? 1 : 0.2
-              }
-              className="transition-all duration-300 animate-master-pulse"
-              style={{ animationDelay: `${i * 0.08}s` }}
-            />
-          ))}
-          <defs>
-            <linearGradient id="delta-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="var(--river-a)" />
-              <stop offset="100%" stopColor="var(--river-b)" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
 
       <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
         {anchors.map((anchor, index) => (
