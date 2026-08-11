@@ -11,25 +11,25 @@ export function MicroPulseLine({ width = 24 }: { width?: number }) {
     <svg
       width={width}
       height="12"
-      viewBox="0 0 24 12"
+      viewBox="0 0 32 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className="inline-block align-middle"
       aria-hidden
     >
       <path
-        d="M 0 6 L 6 6 L 9 2 L 13 10 L 16 6 L 24 6"
+        d="M 1 6 L 8 6 L 11 2.5 L 16 9.5 L 20 4 L 23 6 L 31 6"
         stroke={`url(#mp-${uid})`}
-        strokeWidth="2"
+        strokeWidth="2.25"
         strokeLinecap="round"
         strokeLinejoin="round"
         className="animate-master-pulse-scale"
-        style={{ transformOrigin: "12px 6px" }}
+        style={{ transformOrigin: "16px 6px" }}
       />
       <defs>
         <linearGradient id={`mp-${uid}`} x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="var(--river-a)" />
-          <stop offset="100%" stopColor="var(--river-b)" />
+          <stop offset="100%" stopColor="var(--ribbon-1)" />
         </linearGradient>
       </defs>
     </svg>

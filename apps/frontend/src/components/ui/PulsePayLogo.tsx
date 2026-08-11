@@ -3,15 +3,15 @@ import React from "react";
 interface PulsePayLogoProps {
   className?: string;
   size?: number;
-  /** When true, skip opaque ink square — for inline nav on light/dark bg */
+  /** Unused — mark is self-contained on clay tile */
   transparent?: boolean;
 }
 
-export function PulsePayLogo({
-  className = "w-8 h-8",
-  size,
-  transparent = false,
-}: PulsePayLogoProps) {
+/**
+ * PulsePay logo mark
+ * Clay rounded tile · cream filled P · clean heartbeat under the stem
+ */
+export function PulsePayLogo({ className = "w-8 h-8", size }: PulsePayLogoProps) {
   const style = size ? { width: size, height: size } : undefined;
   const uid = React.useId().replace(/:/g, "");
 
@@ -22,70 +22,73 @@ export function PulsePayLogo({
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       style={style}
-      aria-hidden
+      role="img"
+      aria-label="PulsePay"
     >
       <defs>
         <linearGradient
-          id={`ink-clay-${uid}`}
-          x1="40"
-          y1="160"
-          x2="170"
-          y2="40"
+          id={`pp-tile-${uid}`}
+          x1="20"
+          y1="180"
+          x2="180"
+          y2="20"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0%" stopColor="var(--river-b)" />
-          <stop offset="55%" stopColor="var(--river-a)" />
-          <stop offset="100%" stopColor="var(--ribbon-1)" />
+          <stop offset="0%" stopColor="var(--river-b, #9A3412)" />
+          <stop offset="55%" stopColor="var(--accent, #C45C26)" />
+          <stop offset="100%" stopColor="var(--ribbon-1, #D97706)" />
         </linearGradient>
       </defs>
 
-      {!transparent && (
-        <>
-          <rect width="200" height="200" rx="40" fill="var(--bg-sunken)" />
-          <rect
-            x="3"
-            y="3"
-            width="194"
-            height="194"
-            rx="37"
-            fill="none"
-            stroke="var(--border-strong)"
-            strokeWidth="1.5"
-          />
-        </>
-      )}
+      {/* Clay tile */}
+      <rect width="200" height="200" rx="48" fill={`url(#pp-tile-${uid})`} />
 
-      {/* Continuous river forming P + pulse notch */}
-      <path
-        d="M 58 42
-           L 58 158
-           M 58 42
-           C 58 42 118 42 132 42
-           C 162 42 168 78 140 96
-           C 128 104 110 106 96 106
-           L 58 106
-           M 96 106
-           C 130 106 150 130 128 152
-           C 118 162 98 158 88 148
-           L 102 128
-           L 114 158
-           L 128 138
-           L 148 148"
-        stroke={`url(#ink-clay-${uid})`}
-        strokeWidth="12"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+      {/* Soft highlight for depth */}
+      <rect
+        x="10"
+        y="10"
+        width="180"
+        height="180"
+        rx="40"
         fill="none"
-        className="animate-master-pulse-scale"
-        style={{ transformOrigin: "100px 100px" }}
+        stroke="var(--cta-on, #EDE6DC)"
+        strokeOpacity="0.12"
+        strokeWidth="2"
       />
 
+      {/* Filled P */}
       <path
-        d="M 48 168 C 80 156 110 172 152 160"
-        stroke="var(--ribbon-2)"
-        strokeWidth="4"
+        fill="var(--cta-on, #EDE6DC)"
+        fillRule="evenodd"
+        d="M 52 36
+           H 118
+           C 156 36 178 58 178 92
+           C 178 126 156 148 118 148
+           H 76
+           V 164
+           H 52
+           Z
+           M 76 60
+           V 124
+           H 114
+           C 138 124 150 112 150 92
+           C 150 72 138 60 114 60
+           Z"
+      />
+
+      {/* Clean heartbeat — one spike, no scribble */}
+      <path
+        d="M 52 172
+           L 78 172
+           L 90 152
+           L 106 184
+           L 120 164
+           L 132 172
+           L 160 172"
+        stroke="var(--cta-on, #EDE6DC)"
+        strokeWidth="9"
         strokeLinecap="round"
-        strokeOpacity="0.55"
+        strokeLinejoin="round"
         fill="none"
       />
     </svg>

@@ -1,9 +1,14 @@
 <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="8" fill="#14110E"/>
+  <rect width="32" height="32" rx="8" fill="#C45C26"/>
   <path
-    d="M9 7 V25 M9 7 H18.5 C22.5 7 23.5 12 20 14.5 C18.5 15.5 16 16 14 16 H9 M14 16 C19 16 21.5 19.5 18.5 23 L16 19.5 L17.5 25 L20 21.5 L23 23"
-    stroke="#C45C26"
-    stroke-width="2.2"
+    fill="#EDE6DC"
+    fill-rule="evenodd"
+    d="M8.5 6 H18.5 C24.2 6 27.5 9.2 27.5 14 C27.5 18.8 24.2 22 18.5 22 H12 V25.5 H8.5 Z M12 9.5 V18.5 H17.8 C21.2 18.5 23 16.8 23 14 C23 11.2 21.2 9.5 17.8 9.5 Z"
+  />
+  <path
+    d="M8.5 27.5 L12.2 27.5 L14 24.8 L16.2 29.2 L18.2 26.5 L19.8 27.5 L23.5 27.5"
+    stroke="#EDE6DC"
+    stroke-width="1.6"
     stroke-linecap="round"
     stroke-linejoin="round"
     fill="none"

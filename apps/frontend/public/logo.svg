@@ -1,46 +1,40 @@
 <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="ink-clay" x1="40" y1="160" x2="170" y2="40" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#9A3412"/>
-      <stop offset="55%" stop-color="#B45309"/>
-      <stop offset="100%" stop-color="#D97706"/>
-    </linearGradient>
-  </defs>
+  <!-- PulsePay mark: clay tile + cream filled P + clean heartbeat -->
+  <rect width="200" height="200" rx="48" fill="#C45C26"/>
 
-  <!-- Ink square -->
-  <rect width="200" height="200" rx="40" fill="#14110E"/>
-  <rect x="3" y="3" width="194" height="194" rx="37" fill="none" stroke="#3D342C" stroke-width="1.5"/>
-
-  <!-- Continuous river forming P + pulse notch -->
+  <!-- Filled P (cream) -->
   <path
-    d="M 58 42
-       L 58 158
-       M 58 42
-       C 58 42 118 42 132 42
-       C 162 42 168 78 140 96
-       C 128 104 110 106 96 106
-       L 58 106
-       M 96 106
-       C 130 106 150 130 128 152
-       C 118 162 98 158 88 148
-       L 102 128
-       L 114 158
-       L 128 138
-       L 148 148"
-    stroke="url(#ink-clay)"
-    stroke-width="12"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    fill="none"
+    fill="#EDE6DC"
+    d="M 52 36
+       H 118
+       C 156 36 178 58 178 92
+       C 178 126 156 148 118 148
+       H 76
+       V 164
+       H 52
+       Z
+       M 76 60
+       V 124
+       H 114
+       C 138 124 150 112 150 92
+       C 150 72 138 60 114 60
+       Z"
+    fill-rule="evenodd"
   />
 
-  <!-- Soft secondary stone ribbon -->
+  <!-- Clean single pulse under the stem -->
   <path
-    d="M 48 168 C 80 156 110 172 152 160"
-    stroke="#78716C"
-    stroke-width="4"
+    d="M 52 172
+       L 78 172
+       L 90 152
+       L 106 184
+       L 120 164
+       L 132 172
+       L 160 172"
+    stroke="#EDE6DC"
+    stroke-width="9"
     stroke-linecap="round"
-    stroke-opacity="0.55"
+    stroke-linejoin="round"
     fill="none"
   />
 </svg>
