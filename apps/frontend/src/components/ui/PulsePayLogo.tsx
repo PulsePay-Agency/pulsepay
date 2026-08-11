@@ -3,10 +3,17 @@ import React from "react";
 interface PulsePayLogoProps {
   className?: string;
   size?: number;
+  /** When true, skip opaque ink square — for inline nav on light/dark bg */
+  transparent?: boolean;
 }
 
-export function PulsePayLogo({ className = "w-8 h-8", size }: PulsePayLogoProps) {
-  const style = size ? { width: size, height: size } : {};
+export function PulsePayLogo({
+  className = "w-8 h-8",
+  size,
+  transparent = false,
+}: PulsePayLogoProps) {
+  const style = size ? { width: size, height: size } : undefined;
+  const uid = React.useId().replace(/:/g, "");
 
   return (
     <svg
@@ -15,58 +22,72 @@ export function PulsePayLogo({ className = "w-8 h-8", size }: PulsePayLogoProps)
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       style={style}
+      aria-hidden
     >
       <defs>
-        <linearGradient id="pp-react-g" x1="0" y1="200" x2="200" y2="0" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#00FF9D" />
-          <stop offset="50%" stopColor="#00E5FF" />
-          <stop offset="100%" stopColor="#00A3FF" />
+        <linearGradient
+          id={`ink-clay-${uid}`}
+          x1="40"
+          y1="160"
+          x2="170"
+          y2="40"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0%" stopColor="var(--river-b)" />
+          <stop offset="55%" stopColor="var(--river-a)" />
+          <stop offset="100%" stopColor="var(--ribbon-1)" />
         </linearGradient>
-        <filter id="pp-glow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="4" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
       </defs>
 
-      {/* Background */}
-      <rect width="200" height="200" rx="46" fill="#080C13" />
-      <rect x="2" y="2" width="196" height="196" rx="44" fill="none" stroke="url(#pp-react-g)" strokeWidth="1" strokeOpacity="0.18" />
+      {!transparent && (
+        <>
+          <rect width="200" height="200" rx="40" fill="var(--bg-sunken)" />
+          <rect
+            x="3"
+            y="3"
+            width="194"
+            height="194"
+            rx="37"
+            fill="none"
+            stroke="var(--border-strong)"
+            strokeWidth="1.5"
+          />
+        </>
+      )}
 
-      {/* P — vertical stem */}
-      <rect x="58" y="38" width="14" height="124" rx="7" fill="url(#pp-react-g)" filter="url(#pp-glow)" />
-
-      {/* P — top bar */}
-      <rect x="68" y="38" width="58" height="14" rx="7" fill="url(#pp-react-g)" filter="url(#pp-glow)" />
-
-      {/* P — curved right bump */}
+      {/* Continuous river forming P + pulse notch */}
       <path
-        d="M 126 52 C 152 52 152 104 126 104"
-        stroke="url(#pp-react-g)"
-        strokeWidth="14"
-        strokeLinecap="round"
-        fill="none"
-        filter="url(#pp-glow)"
-      />
-
-      {/* P — middle bar */}
-      <rect x="68" y="97" width="58" height="14" rx="7" fill="url(#pp-react-g)" filter="url(#pp-glow)" />
-
-      {/* ECG Pulse Wave */}
-      <path
-        d="M 48 148 L 70 148 L 82 124 L 96 172 L 110 118 L 124 148 L 152 148"
-        stroke="url(#pp-react-g)"
-        strokeWidth="9"
+        d="M 58 42
+           L 58 158
+           M 58 42
+           C 58 42 118 42 132 42
+           C 162 42 168 78 140 96
+           C 128 104 110 106 96 106
+           L 58 106
+           M 96 106
+           C 130 106 150 130 128 152
+           C 118 162 98 158 88 148
+           L 102 128
+           L 114 158
+           L 128 138
+           L 148 148"
+        stroke={`url(#ink-clay-${uid})`}
+        strokeWidth="12"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
-        filter="url(#pp-glow)"
+        className="animate-master-pulse-scale"
+        style={{ transformOrigin: "100px 100px" }}
       />
 
-      {/* Pulse node dot */}
-      <circle cx="152" cy="148" r="5.5" fill="url(#pp-react-g)" filter="url(#pp-glow)" />
+      <path
+        d="M 48 168 C 80 156 110 172 152 160"
+        stroke="var(--ribbon-2)"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeOpacity="0.55"
+        fill="none"
+      />
     </svg>
   );
 }

@@ -6,11 +6,31 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Space Grotesk", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
-        display: ["Space Grotesk", "sans-serif"],
+        sans: ["Geist", "system-ui", "sans-serif"],
+        mono: ["Geist Mono", "monospace"],
+        display: ["Geist", "sans-serif"],
       },
       colors: {
+        bg: {
+          DEFAULT: "var(--bg)",
+          elevated: "var(--bg-elevated)",
+          sunken: "var(--bg-sunken)",
+        },
+        accent: {
+          DEFAULT: "var(--accent)",
+          hover: "var(--accent-hover)",
+          soft: "var(--accent-soft)",
+        },
+        river: {
+          a: "var(--river-a)",
+          b: "var(--river-b)",
+        },
+        ribbon: {
+          1: "var(--ribbon-1)",
+          2: "var(--ribbon-2)",
+        },
+        signal: "var(--signal-live)",
+        danger: "var(--danger)",
         val: {
           blue: "var(--val-blue)",
           gold: "var(--val-gold)",

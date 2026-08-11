@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Zap, LogOut, Plus, DollarSign, TrendingUp, Users, X, AlertCircle, Sun, Moon, ArrowUpRight } from "lucide-react";
-import { useTheme } from "@/lib/theme";
+import { LogOut, Plus, DollarSign, TrendingUp, Users, X, AlertCircle, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { PulsePayLogo } from "@/components/ui/PulsePayLogo";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 /* ── New Stream Modal ───────────────────────────── */
 function NewStreamModal({ onClose }: { onClose: () => void }) {
@@ -18,7 +19,7 @@ function NewStreamModal({ onClose }: { onClose: () => void }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-[var(--bg-sunken)]/80 flex items-center justify-center z-50 p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -46,7 +47,7 @@ function NewStreamModal({ onClose }: { onClose: () => void }) {
                 value={form.worker}
                 onChange={e => setForm(f => ({ ...f, worker: e.target.value }))}
                 placeholder="GABCDEF123... or passkey:user@example.com"
-                className="w-full bg-surface-0 border border-strong rounded-xl px-4 py-2.5 text-sm text-fg placeholder-fg-faint focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all font-mono"
+                className="w-full bg-surface-0 border border-strong rounded-xl px-4 py-2.5 text-sm text-fg placeholder-fg-faint focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all font-mono"
               />
             </div>
 
@@ -58,7 +59,7 @@ function NewStreamModal({ onClose }: { onClose: () => void }) {
                   value={form.monthly}
                   onChange={e => setForm(f => ({ ...f, monthly: e.target.value }))}
                   placeholder="3000"
-                  className="w-full bg-surface-0 border border-strong rounded-xl px-4 py-2.5 text-sm text-fg placeholder-fg-faint focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all font-mono"
+                  className="w-full bg-surface-0 border border-strong rounded-xl px-4 py-2.5 text-sm text-fg placeholder-fg-faint focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all font-mono"
                 />
               </div>
               <div>
@@ -66,7 +67,7 @@ function NewStreamModal({ onClose }: { onClose: () => void }) {
                 <select
                   value={form.weeks}
                   onChange={e => setForm(f => ({ ...f, weeks: e.target.value }))}
-                  className="w-full bg-surface-0 border border-strong rounded-xl px-4 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer"
+                  className="w-full bg-surface-0 border border-strong rounded-xl px-4 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all appearance-none cursor-pointer"
                 >
                   {[2, 4, 8, 12, 24, 52].map(w => (
                     <option key={w} value={w}>{w} weeks</option>
@@ -115,7 +116,7 @@ function NewStreamModal({ onClose }: { onClose: () => void }) {
               </button>
               <button
                 disabled={!valid}
-                className="flex-1 grad-brand text-white font-semibold py-2.5 rounded-xl hover:opacity-95 transition-opacity disabled:opacity-40 text-sm shadow-md"
+                className="flex-1 grad-brand font-semibold py-2.5 rounded-xl hover:opacity-95 transition-opacity disabled:opacity-40 text-sm shadow-md"
               >
                 Fund & Launch →
               </button>
@@ -129,9 +130,9 @@ function NewStreamModal({ onClose }: { onClose: () => void }) {
 
 /* ── Workers Data ───────────────────────────────── */
 const workers = [
-  { id: "W-001", name: "Amara O.",  addr: "GABCD…1234", rate: "$0.001157/s", accrued: "$1,247.52", total: "$3,000", status: "Streaming", pct: 63, avatarBg: "bg-indigo-600 text-white" },
-  { id: "W-002", name: "Daniel K.", addr: "GEFGH…5678", rate: "$0.002314/s", accrued: "$3,108.00", total: "$6,000", status: "Streaming", pct: 52, avatarBg: "bg-violet-600 text-white" },
-  { id: "W-003", name: "Priya M.",  addr: "GIJKL…9012", rate: "$0.000579/s", accrued: "$750.00",   total: "$1,500", status: "Paused",    pct: 50, avatarBg: "bg-slate-500 text-white" },
+  { id: "W-001", name: "Amara O.",  addr: "GABCD…1234", rate: "$0.001157/s", accrued: "$1,247.52", total: "$3,000", status: "Streaming", pct: 63, avatarBg: "bg-accent text-[var(--cta-on)]" },
+  { id: "W-002", name: "Daniel K.", addr: "GEFGH…5678", rate: "$0.002314/s", accrued: "$3,108.00", total: "$6,000", status: "Streaming", pct: 52, avatarBg: "bg-[var(--ribbon-2)] text-[var(--cta-on)]" },
+  { id: "W-003", name: "Priya M.",  addr: "GIJKL…9012", rate: "$0.000579/s", accrued: "$750.00",   total: "$1,500", status: "Paused",    pct: 50, avatarBg: "bg-fg-faint text-[var(--cta-on)]" },
 ];
 
 const overview = [
@@ -159,46 +160,37 @@ const overview = [
     value: "2",
     sub: "Streaming currently",
     colorClass: "text-val-green",
-    borderClass: "border-emerald-500/20 dark:border-emerald-500/30",
-    bgClass: "bg-emerald-500/10",
+    borderClass: "border-signal/30",
+    bgClass: "bg-signal/10",
   },
 ];
 
 /* ── Page Component ─────────────────────────────── */
 export default function EmployerDashboard() {
   const router = useRouter();
-  const { theme, toggle } = useTheme();
   const [modal, setModal] = useState(false);
 
   return (
-    <div className="min-h-screen bg-surface-0 text-fg transition-colors duration-200">
+    <div className="min-h-screen bg-bg text-fg">
       {/* Header */}
-      <header className="glass sticky top-0 z-40 px-6 h-16 flex items-center justify-between border-b border-subtle">
+      <header className="bg-bg-elevated sticky top-0 z-40 px-6 h-16 flex items-center justify-between border-b border-border">
         <Link href="/" className="flex items-center gap-2.5 font-bold text-lg tracking-tight">
-          <span className="w-8 h-8 grad-brand rounded-xl flex items-center justify-center text-white shadow-sm">
-            <Zap className="w-4 h-4" strokeWidth={2.5} />
-          </span>
-          <span className="font-display">PulsePay</span>
+          <PulsePayLogo className="w-8 h-8" size={32} />
+          <span>PulsePay</span>
         </Link>
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 bg-surface-2 rounded-full px-3 py-1 border border-subtle">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <div className="hidden sm:flex items-center gap-2 bg-bg-sunken rounded-full px-3 py-1 border border-border">
+            <span className="w-2 h-2 rounded-full bg-signal animate-master-pulse-scale" />
             <span className="text-xs font-semibold text-fg-muted">Stellar Soroban Testnet</span>
           </div>
           <button
             onClick={() => setModal(true)}
-            className="grad-brand text-white text-xs font-bold px-3.5 py-2 rounded-xl hover:opacity-90 transition-opacity flex items-center gap-1.5 shadow-sm"
+            className="grad-brand text-xs font-bold px-3.5 py-2 rounded-xl hover:opacity-90 transition-opacity flex items-center gap-1.5 shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" /> New Stream
           </button>
-          <button
-            onClick={toggle}
-            aria-label="Toggle Theme"
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-fg-muted hover:text-fg hover:bg-surface-2 border border-subtle transition-all"
-          >
-            {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
-          </button>
-          <div className="w-8 h-8 grad-brand rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm cursor-default">
+          <ThemeToggle />
+          <div className="w-8 h-8 grad-brand rounded-full flex items-center justify-center text-[var(--cta-on)] font-bold text-xs shadow-sm cursor-default">
             E
           </div>
           <button
@@ -229,7 +221,7 @@ export default function EmployerDashboard() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setModal(true)}
-            className="grad-brand text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-md"
+            className="grad-brand text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-md"
           >
             <Plus className="w-4 h-4" /> Create Stream
           </motion.button>
@@ -353,7 +345,7 @@ export default function EmployerDashboard() {
                       <div className="flex items-center gap-2">
                         <div className="h-2 flex-1 rounded-full bg-zinc-200 dark:bg-zinc-700 overflow-hidden">
                           <div
-                            className="h-full bg-indigo-600 dark:bg-indigo-400 rounded-full"
+                            className="h-full bg-accent rounded-full"
                             style={{ width: `${w.pct}%` }}
                           />
                         </div>
@@ -369,7 +361,7 @@ export default function EmployerDashboard() {
                         w.status === "Streaming" ? "pill-jade" : "pill-gold"
                       }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${
-                          w.status === "Streaming" ? "bg-emerald-600 dark:bg-emerald-400 animate-pulse" : "bg-amber-600 dark:bg-amber-400"
+                          w.status === "Streaming" ? "bg-signal animate-pulse" : "bg-[var(--ribbon-1)]"
                         }`} />
                         {w.status}
                       </span>
@@ -382,7 +374,7 @@ export default function EmployerDashboard() {
                           Cancel
                         </button>
                         <span className="text-zinc-300 dark:text-zinc-700">|</span>
-                        <button className="text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 px-2 py-1 rounded hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors">
+                        <button className="text-xs font-bold text-accent hover:text-accent-hover px-2 py-1 rounded hover:bg-bg-sunken transition-colors">
                           Clawback
                         </button>
                       </div>

@@ -5,27 +5,67 @@
 /* ── Fonts: Geist Sans & Geist Mono ────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap');
 
-/* ── Color System & Master Pulse Variable ─────────────────────── */
+/* ── Ink & Clay — Light (default) ──────────────────────────────── */
 :root {
-  --bg-dark: #0B0A12;
-  --surface-glass: #16141F;
-  --glass-border: rgba(248, 250, 252, 0.08);
-  --cta-primary: #E85A3C;
-  --cta-primary-hover: #d44e32;
-  --river-start: #3B82F6;
-  --river-end: #10B981;
-  --feather-1: #F97316;
-  --feather-2: #A855F7;
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
+  --bg: #F3EEE6;
+  --bg-elevated: #EBE4D8;
+  --bg-sunken: #E2D9CB;
+  --border: #D4C8B8;
+  --border-strong: #B8A994;
+  --fg: #1A1612;
+  --fg-muted: #5C534A;
+  --fg-faint: #8A7F72;
+  --accent: #B45309;
+  --accent-hover: #92400E;
+  --accent-soft: #8B4513;
+  --river-a: #B45309;
+  --river-b: #9A3412;
+  --ribbon-1: #D97706;
+  --ribbon-2: #78716C;
+  --signal-live: #CA8A04;
+  --danger: #B91C1C;
+  --cta-on: #EDE6DC;
 
-  /* Legacy fallback support */
-  --surface-0: #0B0A12;
-  --surface-1: #16141F;
-  --surface-2: #1e1b2e;
-  --border-color: rgba(248, 250, 252, 0.08);
-  --fg: #F8FAFC;
-  --fg-muted: #94A3B8;
+  /* Legacy aliases used by app pages */
+  --surface-0: var(--bg);
+  --surface-1: var(--bg-elevated);
+  --surface-2: var(--bg-sunken);
+  --surface-3: var(--border);
+  --border-color: var(--border);
+  --val-gold: var(--accent);
+  --val-green: var(--signal-live);
+  --val-blue: var(--accent);
+}
+
+/* ── Ink & Clay — Dark ─────────────────────────────────────────── */
+.dark {
+  --bg: #14110E;
+  --bg-elevated: #1C1814;
+  --bg-sunken: #0F0D0B;
+  --border: #2A2420;
+  --border-strong: #3D342C;
+  --fg: #EDE6DC;
+  --fg-muted: #A89F92;
+  --fg-faint: #6E655C;
+  --accent: #C45C26;
+  --accent-hover: #A84C1E;
+  --accent-soft: #8B4513;
+  --river-a: #B45309;
+  --river-b: #9A3412;
+  --ribbon-1: #D97706;
+  --ribbon-2: #78716C;
+  --signal-live: #CA8A04;
+  --danger: #B91C1C;
+  --cta-on: #EDE6DC;
+
+  --surface-0: var(--bg);
+  --surface-1: var(--bg-elevated);
+  --surface-2: var(--bg-sunken);
+  --surface-3: var(--border-strong);
+  --border-color: var(--border);
+  --val-gold: var(--accent);
+  --val-green: var(--signal-live);
+  --val-blue: var(--accent);
 }
 
 @layer base {
@@ -37,71 +77,115 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #0B0A12;
-    color: #F8FAFC;
+    background-color: var(--bg);
+    color: var(--fg);
   }
 
   body {
-    background-color: #0B0A12;
-    color: #F8FAFC;
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: 'Geist', system-ui, sans-serif;
     overflow-x: hidden;
   }
 
   ::selection {
-    background: rgba(232, 90, 60, 0.3);
-    color: #F8FAFC;
+    background: color-mix(in srgb, var(--accent) 35%, transparent);
+    color: var(--fg);
   }
 }
 
-/* ── Synchronized Master Pulse Driver (3.8s Calm Heartbeat ~75bpm) ── */
+/* ── Master Pulse Driver (3.8s ~75bpm) — Ink & Clay ───────────── */
 @keyframes master-pulse-heartbeat {
   0%, 100% {
-    opacity: 0.75;
-    transform: scale(1);
-    filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3));
+    opacity: 0.7;
+    stroke-width: 18;
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--river-a) 35%, transparent));
   }
   40% {
     opacity: 1;
-    transform: scale(1.02);
-    filter: drop-shadow(0 0 25px rgba(16, 185, 129, 0.75));
+    stroke-width: 26;
+    filter: drop-shadow(0 0 22px color-mix(in srgb, var(--river-a) 70%, transparent));
   }
   60% {
-    opacity: 0.85;
-    transform: scale(1.008);
-    filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.5));
+    opacity: 0.88;
+    stroke-width: 22;
+    filter: drop-shadow(0 0 14px color-mix(in srgb, var(--river-b) 55%, transparent));
+  }
+}
+
+@keyframes master-pulse-scale {
+  0%, 100% {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+  60% {
+    opacity: 0.88;
+    transform: scale(1.015);
   }
 }
 
 @keyframes border-pulse-glow {
   0%, 100% {
-    border-color: rgba(248, 250, 252, 0.08);
-    box-shadow: 0 0 0px rgba(16, 185, 129, 0);
+    border-color: var(--border);
+    box-shadow: 0 0 0 transparent;
   }
   50% {
-    border-color: rgba(16, 185, 129, 0.35);
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 18%, transparent);
   }
 }
 
 @keyframes ribbon-undulate-1 {
-  0%, 100% { transform: translateY(0px) scaleY(1); opacity: 0.45; }
-  50% { transform: translateY(-8px) scaleY(1.05); opacity: 0.65; }
+  0%, 100% { transform: translateY(0) scaleY(1); opacity: 0.4; }
+  35% { transform: translateY(-12px) scaleY(1.08); opacity: 0.7; }
+  70% { transform: translateY(4px) scaleY(0.96); opacity: 0.5; }
 }
 
 @keyframes ribbon-undulate-2 {
-  0%, 100% { transform: translateY(0px) scaleY(1); opacity: 0.35; }
-  50% { transform: translateY(8px) scaleY(0.95); opacity: 0.55; }
+  0%, 100% { transform: translateY(0) scaleY(1); opacity: 0.35; }
+  40% { transform: translateY(12px) scaleY(0.94); opacity: 0.65; }
+  75% { transform: translateY(-6px) scaleY(1.05); opacity: 0.45; }
 }
 
 @keyframes shimmer-ripple {
-  0%, 100% { opacity: 0.2; transform: translateY(0px); }
-  50% { opacity: 0.45; transform: translateY(3px); }
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 0.55; transform: translateY(4px); }
 }
 
-/* Single Pulse Sync Classes */
+@keyframes badge-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes flow-dash {
+  to { stroke-dashoffset: -120; }
+}
+
+@keyframes liquid-burst {
+  0% { transform: scale(0.4); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes divider-pulse {
+  0%, 100% { transform: scaleX(1); opacity: 0.7; }
+  50% { transform: scaleX(1.35); opacity: 1; }
+}
+
+@keyframes divider-pulse-v {
+  0%, 100% { transform: scaleY(1) translateX(-50%); opacity: 0.7; width: 2px; }
+  50% { transform: scaleY(1) translateX(-50%); opacity: 1; width: 4px; }
+}
+
 .animate-master-pulse {
   animation: master-pulse-heartbeat 3.8s ease-in-out infinite;
+}
+
+.animate-master-pulse-scale {
+  animation: master-pulse-scale 3.8s ease-in-out infinite;
 }
 
 .animate-border-pulse {
@@ -109,18 +193,41 @@
 }
 
 .animate-ribbon-1 {
-  animation: ribbon-undulate-1 7.6s ease-in-out infinite;
+  animation: ribbon-undulate-1 6.5s ease-in-out infinite;
 }
 
 .animate-ribbon-2 {
-  animation: ribbon-undulate-2 7.6s ease-in-out infinite;
+  animation: ribbon-undulate-2 7.2s ease-in-out infinite;
+  animation-delay: 0.4s;
 }
 
 .animate-shimmer {
   animation: shimmer-ripple 3.8s ease-in-out infinite;
 }
 
-/* ── Accessibility: Reduced Motion Support ─────────────────────── */
+.animate-badge-float {
+  animation: badge-float 4.2s ease-in-out infinite;
+}
+
+.animate-flow-dash {
+  stroke-dasharray: 8 14;
+  animation: flow-dash 2.8s linear infinite;
+}
+
+.animate-liquid-burst {
+  animation: liquid-burst 280ms ease-out forwards;
+}
+
+.animate-divider-h {
+  animation: divider-pulse 3.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-divider-v {
+  animation: divider-pulse-v 3.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;
@@ -129,44 +236,77 @@
     scroll-behavior: auto !important;
   }
   .animate-master-pulse,
+  .animate-master-pulse-scale,
   .animate-border-pulse,
   .animate-ribbon-1,
   .animate-ribbon-2,
-  .animate-shimmer {
+  .animate-shimmer,
+  .animate-badge-float,
+  .animate-flow-dash,
+  .animate-divider-h,
+  .animate-divider-v {
     animation: none !important;
   }
 }
 
-/* ── Typography & Layout Utilities ─────────────────────────────── */
+/* ── Shared utilities ──────────────────────────────────────────── */
 .font-mono-num {
   font-family: 'Geist Mono', monospace;
   font-variant-numeric: tabular-nums;
 }
 
-.glass-card {
-  background-color: #16141F;
-  border: 1px solid rgba(248, 250, 252, 0.08);
+.panel {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
 }
 
 .btn-primary {
-  background-color: #E85A3C;
-  color: #F8FAFC;
+  background-color: var(--accent);
+  color: var(--cta-on);
   font-weight: 600;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 .btn-primary:hover {
-  background-color: #d44e32;
+  background-color: var(--accent-hover);
 }
 
-.btn-glass {
-  background-color: rgba(248, 250, 252, 0.05);
-  border: 1px solid rgba(248, 250, 252, 0.1);
-  color: #F8FAFC;
+.btn-secondary {
+  background-color: var(--bg-sunken);
+  border: 1px solid var(--border-strong);
+  color: var(--fg);
   font-weight: 600;
-  backdrop-filter: blur(12px);
-  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
-.btn-glass:hover {
-  background-color: rgba(248, 250, 252, 0.1);
-  border-color: rgba(248, 250, 252, 0.2);
+.btn-secondary:hover {
+  background-color: var(--bg-elevated);
+  border-color: var(--accent-soft);
+}
+
+.grad-brand {
+  background: linear-gradient(135deg, var(--river-a), var(--river-b));
+  color: var(--cta-on);
+}
+
+.card-base {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+
+.label-xs {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.paper-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  pointer-events: none;
+}
+
+.text-mono {
+  font-family: 'Geist Mono', monospace;
+  font-variant-numeric: tabular-nums;
 }

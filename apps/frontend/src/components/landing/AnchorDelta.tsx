@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { Globe, ExternalLink } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { SectionReveal, StaggerReveal, staggerItem } from "@/components/ui/SectionReveal";
 
 interface AnchorCardProps {
   name: string;
@@ -14,12 +16,17 @@ interface AnchorCardProps {
 
 function AnchorCard({ name, region, asset, badge, isHovered, onHover, onLeave }: AnchorCardProps) {
   const [transform, setTransform] = useState({ x: 0, y: 0 });
+  const reduce = useReducedMotion();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (reduce) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left - rect.width / 2) * 0.12;
     const y = (e.clientY - rect.top - rect.height / 2) * 0.12;
-    setTransform({ x, y });
+    setTransform({
+      x: Math.max(-4, Math.min(4, x)),
+      y: Math.max(-4, Math.min(4, y)),
+    });
   };
 
   const handleMouseLeave = () => {
@@ -28,45 +35,47 @@ function AnchorCard({ name, region, asset, badge, isHovered, onHover, onLeave }:
   };
 
   return (
-    <div
+    <motion.div
+      variants={staggerItem}
       tabIndex={0}
       onMouseEnter={onHover}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
       onFocus={onHover}
       onBlur={handleMouseLeave}
-      className={`glass-card p-6 rounded-2xl border transition-all duration-300 cursor-pointer outline-none focus:ring-2 focus:ring-[#3B82F6] ${
-        isHovered
-          ? "border-[#10B981]/50 bg-[#16141F] shadow-xl shadow-[#10B981]/10 -translate-y-1"
-          : "border-[rgba(248,250,252,0.08)] bg-[#16141F]/60"
+      className={`panel p-6 rounded-2xl transition-shadow duration-300 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+        isHovered ? "border-border-strong shadow-lg -translate-y-1" : ""
       }`}
       style={{
         transform: isHovered
           ? `translate3d(${transform.x}px, ${transform.y - 4}px, 0)`
           : "translate3d(0, 0, 0)",
+        borderColor: isHovered ? "var(--border-strong)" : undefined,
       }}
     >
       <div className="flex items-center justify-between mb-4">
-        <div className="w-10 h-10 rounded-xl bg-[#0B0A12] border border-[rgba(248,250,252,0.08)] flex items-center justify-center font-bold text-[#F8FAFC]">
+        <div className="w-10 h-10 rounded-xl bg-bg-sunken border border-border flex items-center justify-center font-bold text-fg">
           {name[0]}
         </div>
-        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20">
+        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-bg-sunken text-accent border border-border">
           {badge}
         </span>
       </div>
 
-      <h4 className="text-lg font-bold text-[#F8FAFC] mb-1 flex items-center justify-between">
+      <h4 className="text-lg font-bold text-fg mb-1 flex items-center justify-between">
         {name}
-        <ExternalLink className={`w-3.5 h-3.5 transition-opacity ${isHovered ? "opacity-100 text-[#10B981]" : "opacity-0"}`} />
+        <ExternalLink
+          className={`w-3.5 h-3.5 transition-opacity text-accent ${isHovered ? "opacity-100" : "opacity-0"}`}
+        />
       </h4>
 
-      <p className="text-xs text-[#94A3B8] font-medium mb-3">{region}</p>
+      <p className="text-xs text-fg-muted font-medium mb-3">{region}</p>
 
-      <div className="pt-3 border-t border-[rgba(248,250,252,0.06)] flex items-center justify-between text-xs">
-        <span className="text-[#94A3B8]">Supported Asset</span>
-        <span className="font-bold text-[#F8FAFC] font-mono-num">{asset}</span>
+      <div className="pt-3 border-t border-border flex items-center justify-between text-xs">
+        <span className="text-fg-muted">Supported Asset</span>
+        <span className="font-bold text-fg font-mono-num">{asset}</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -85,45 +94,53 @@ export default function AnchorDelta() {
 
   return (
     <section className="py-24 px-6 max-w-7xl mx-auto relative overflow-hidden">
-      
-      {/* Delta Header */}
-      <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#3B82F6]/10 text-[#3B82F6] text-xs font-semibold border border-[#3B82F6]/20">
+      <SectionReveal className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-bg-sunken text-accent text-xs font-semibold border border-border">
           <Globe className="w-3.5 h-3.5" />
           The Global Delta
         </div>
-        <h2 className="text-4xl lg:text-5xl font-bold tracking-tight text-[#F8FAFC]">
+        <h2 className="text-4xl lg:text-5xl font-bold tracking-tight text-fg">
           Cash out in local currency. <br />
-          <span className="bg-gradient-to-r from-[#3B82F6] to-[#10B981] bg-clip-text text-transparent">
+          <span
+            className="bg-clip-text text-transparent"
+            style={{
+              backgroundImage: "linear-gradient(90deg, var(--river-a), var(--river-b))",
+            }}
+          >
             Anywhere the river reaches.
           </span>
         </h2>
-        <p className="text-[#94A3B8] text-base leading-relaxed">
-          Soroban streams connect seamlessly with Stellar SEP-24 anchors to convert digital value into physical cash or local bank accounts instantly.
+        <p className="text-fg-muted text-base leading-relaxed">
+          Soroban streams connect with Stellar SEP-24 anchors to convert digital value into
+          physical cash or local bank accounts.
         </p>
-      </div>
+      </SectionReveal>
 
-      {/* SVG Delta Branch Visual Connector */}
       <div className="w-full h-24 mb-6 relative">
-        <svg viewBox="0 0 1000 100" className="w-full h-full overflow-visible" fill="none">
-          <path
-            d="M 500 0 Q 500 50 100 100 M 500 0 Q 500 50 300 100 M 500 0 Q 500 50 500 100 M 500 0 Q 500 50 700 100 M 500 0 Q 500 50 900 100"
-            stroke="url(#delta-grad)"
-            strokeWidth="3"
-            strokeOpacity={activeAnchor !== null ? "0.8" : "0.35"}
-            className="transition-all duration-300 animate-master-pulse"
-          />
+        <svg viewBox="0 0 1000 100" className="w-full h-full overflow-visible" fill="none" aria-hidden>
+          {[100, 300, 500, 700, 900].map((x, i) => (
+            <path
+              key={x}
+              d={`M 500 0 Q 500 50 ${x} 100`}
+              stroke="url(#delta-grad)"
+              strokeWidth={activeAnchor === i || activeAnchor === null ? 3 : 2}
+              strokeOpacity={
+                activeAnchor === null ? 0.4 : activeAnchor === i ? 1 : 0.2
+              }
+              className="transition-all duration-300 animate-master-pulse"
+              style={{ animationDelay: `${i * 0.08}s` }}
+            />
+          ))}
           <defs>
             <linearGradient id="delta-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#3B82F6" />
-              <stop offset="100%" stopColor="#10B981" />
+              <stop offset="0%" stopColor="var(--river-a)" />
+              <stop offset="100%" stopColor="var(--river-b)" />
             </linearGradient>
           </defs>
         </svg>
       </div>
 
-      {/* 6 Glass Anchor Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+      <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
         {anchors.map((anchor, index) => (
           <AnchorCard
             key={anchor.name}
@@ -133,7 +150,7 @@ export default function AnchorDelta() {
             onLeave={() => setActiveAnchor(null)}
           />
         ))}
-      </div>
+      </StaggerReveal>
     </section>
   );
 }

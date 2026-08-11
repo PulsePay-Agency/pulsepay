@@ -11,29 +11,29 @@ import Footer from "@/components/landing/Footer";
 
 export default function PulsePayLandingPage() {
   return (
-    <main className="min-h-screen bg-[#0B0A12] text-[#F8FAFC] selection:bg-[#E85A3C]/30 relative overflow-hidden">
-      {/* Section 1: Sticky Glass Navigation */}
+    <main className="min-h-screen bg-bg text-fg relative overflow-hidden">
+      {/* Section 1 — Sticky Navigation */}
       <Navigation />
 
-      {/* Section 2: Hero Section & The Mandarin River */}
+      {/* Section 2 — Hero & Mandarin River */}
       <HeroRiver />
 
-      {/* Section 3: Live Protocol Pulse Bar */}
+      {/* Section 3 — Live Protocol Pulse Bar */}
       <PulseBar />
 
-      {/* Section 4: Dual Reality Section */}
+      {/* Section 4 — Dual Reality */}
       <DualReality />
 
-      {/* Section 5: Anchor River Continuation (The Delta) */}
+      {/* Section 5 — Anchor Delta */}
       <AnchorDelta />
 
-      {/* Section 6: Trust & Transparency Strip */}
+      {/* Section 6 — Trust & Transparency */}
       <TrustStrip />
 
-      {/* Section 7: Final CTA Banner */}
+      {/* Section 7 — Final CTA */}
       <FinalCTA />
 
-      {/* Section 8: Footer */}
+      {/* Section 8 — Footer */}
       <Footer />
     </main>
   );

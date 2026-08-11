@@ -2,8 +2,11 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { PulsePayLogo } from "@/components/ui/PulsePayLogo";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export function MicroPulseLine({ width = 24 }: { width?: number }) {
+  const uid = React.useId().replace(/:/g, "");
   return (
     <svg
       width={width}
@@ -12,113 +15,106 @@ export function MicroPulseLine({ width = 24 }: { width?: number }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className="inline-block align-middle"
+      aria-hidden
     >
       <path
         d="M 0 6 L 6 6 L 9 2 L 13 10 L 16 6 L 24 6"
-        stroke="url(#micropulse-grad)"
+        stroke={`url(#mp-${uid})`}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="animate-master-pulse"
+        className="animate-master-pulse-scale"
+        style={{ transformOrigin: "12px 6px" }}
       />
       <defs>
-        <linearGradient id="micropulse-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#3B82F6" />
-          <stop offset="100%" stopColor="#10B981" />
+        <linearGradient id={`mp-${uid}`} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="var(--river-a)" />
+          <stop offset="100%" stopColor="var(--river-b)" />
         </linearGradient>
       </defs>
     </svg>
   );
 }
 
-/* ── Section 1: Sticky Glass Navigation ────────────────────────────────── */
+/* ── Section 1: Sticky Navigation ────────────────────────────────── */
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <header
-      className={`fixed top-0 z-50 w-full h-[68px] transition-all duration-300 ${
+      className={`fixed top-0 z-50 w-full h-[68px] transition-colors duration-300 border-b ${
         scrolled
-          ? "bg-[#0B0A12]/90 backdrop-blur-xl border-b border-[rgba(248,250,252,0.08)] shadow-lg"
-          : "bg-[#16141F]/65 backdrop-blur-md border-b border-[rgba(248,250,252,0.08)]"
+          ? "bg-bg-elevated border-border shadow-sm"
+          : "bg-bg border-transparent"
       }`}
     >
       <nav className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-        {/* Left: Wordmark & Micro-Pulse Line */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <span className="font-bold text-xl text-[#F8FAFC] tracking-tight">PulsePay</span>
+          <PulsePayLogo className="w-8 h-8" size={32} />
+          <span className="font-bold text-xl text-fg tracking-tight">PulsePay</span>
           <MicroPulseLine width={24} />
         </Link>
 
-        {/* Center: Links (Desktop) */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-[#94A3B8]">
-          <a href="#pulse-bar" className="hover:text-[#F8FAFC] transition-colors">
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-fg-muted">
+          <a href="#pulse-bar" className="hover:text-fg transition-colors">
             Pricing
           </a>
-          <a href="#trust" className="hover:text-[#F8FAFC] transition-colors">
+          <a href="#trust" className="hover:text-fg transition-colors">
             Security
           </a>
           <a
             href="https://oobayemi.gitbook.io/pulsepay"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-[#F8FAFC] transition-colors"
+            className="hover:text-fg transition-colors"
           >
             Docs
           </a>
         </div>
 
-        {/* Right: Dual CTAs */}
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           <Link
             href="/login?role=worker"
-            className="btn-glass px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5"
+            className="btn-secondary px-4 py-2 rounded-xl text-sm"
           >
             Worker Portal
           </Link>
           <Link
             href="/login?role=employer"
-            className="bg-[#E85A3C] hover:bg-[#d44e32] text-[#F8FAFC] font-semibold px-4 py-2 rounded-xl text-sm shadow-md transition-all hover:-translate-y-0.5"
+            className="btn-primary px-4 py-2 rounded-xl text-sm"
           >
             Employer Portal
           </Link>
         </div>
 
-        {/* Mobile Hamburger Trigger */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden text-[#94A3B8] hover:text-[#F8FAFC] p-2"
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="text-fg-muted hover:text-fg p-2"
+            aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </nav>
 
-      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-x-0 top-[68px] bg-[#0B0A12]/95 backdrop-blur-2xl border-b border-[rgba(248,250,252,0.08)] p-6 space-y-4 animate-in slide-in-from-top-2">
-          <div className="flex flex-col gap-3 text-base font-medium text-[#94A3B8] pb-2">
-            <a
-              href="#pulse-bar"
-              onClick={() => setMobileMenuOpen(false)}
-              className="hover:text-[#F8FAFC]"
-            >
+        <div className="md:hidden fixed inset-x-0 top-[68px] bottom-0 bg-bg border-b border-border p-6 space-y-4 z-40">
+          <div className="flex flex-col gap-3 text-base font-medium text-fg-muted pb-2">
+            <a href="#pulse-bar" onClick={() => setMobileMenuOpen(false)} className="hover:text-fg">
               Pricing
             </a>
-            <a
-              href="#trust"
-              onClick={() => setMobileMenuOpen(false)}
-              className="hover:text-[#F8FAFC]"
-            >
+            <a href="#trust" onClick={() => setMobileMenuOpen(false)} className="hover:text-fg">
               Security
             </a>
             <a
@@ -126,23 +122,23 @@ export default function Navigation() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
-              className="hover:text-[#F8FAFC]"
+              className="hover:text-fg"
             >
               Docs
             </a>
           </div>
-          <div className="flex flex-col gap-3 pt-2 border-t border-[rgba(248,250,252,0.08)]">
+          <div className="flex flex-col gap-3 pt-2 border-t border-border">
             <Link
               href="/login?role=worker"
               onClick={() => setMobileMenuOpen(false)}
-              className="btn-glass text-center py-3 rounded-xl font-semibold"
+              className="btn-secondary text-center py-3 rounded-xl"
             >
               Worker Portal
             </Link>
             <Link
               href="/login?role=employer"
               onClick={() => setMobileMenuOpen(false)}
-              className="bg-[#E85A3C] hover:bg-[#d44e32] text-[#F8FAFC] text-center py-3 rounded-xl font-semibold"
+              className="btn-primary text-center py-3 rounded-xl"
             >
               Employer Portal
             </Link>
