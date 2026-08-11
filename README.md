@@ -1,96 +1,134 @@
-# PulsePay 
+# PulsePay
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Stellar Drips Wave](https://img.shields.io/badge/Stellar-Drips_Wave-teal.svg)](https://www.drips.network/wave/stellar/repos)
-[![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/your-org/pulsepay/issues)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Stellar Drips Wave](https://img.shields.io/badge/Stellar-Drips_Wave-00E5A3.svg)](https://www.drips.network/wave/stellar/repos)
+[![Testnet Contract](https://img.shields.io/badge/Soroban-Testnet_Deployed-7C3AED.svg)](https://stellar.expert/explorer/testnet/contract/CBH3ATY3PU7MRK54BOLEHU2ANM67LXLALNR5TQP6MR44NFKOLLEFHRZW)
+[![Live App](https://img.shields.io/badge/Frontend-Vercel_Live-black.svg)](https://pulsepay-frontend.vercel.app/)
 
-PulsePay is a continuous streaming payment protocol built on Stellar's Soroban smart contract network. It features a high-performance Next.js frontend, secure WebAuthn (Passkey) onboarding, and deep integration with SEP-24 Stellar Anchors.
+PulsePay is an automated payroll streaming protocol built natively on Stellar's Soroban smart contract network. It enables real-time micro-disbursements for remote workforces by calculating accrued balances per ledger second. Workers can claim accrued funds at any time with a transparent 0.25% protocol fee and cash out into local physical fiat via integrated SEP-24 Stellar Anchors.
 
-## 🏗️ Repository Architecture
+## 🔗 Official Links & Resources
 
-This project is built using a **Turborepo** monorepo.
+* **Live Web Application:** [pulsepay-frontend.vercel.app](https://pulsepay-frontend.vercel.app/)
+* **Indexer API Endpoint:** [pulsepay-4pi1.onrender.com](https://pulsepay-4pi1.onrender.com)
+* **Protocol Documentation (GitBook):** [oobayemi.gitbook.io/pulsepay](https://oobayemi.gitbook.io/pulsepay)
+* **Block Explorer (StellarExpert):** [Contract `CBH3ATY3...FHRZW`](https://stellar.expert/explorer/testnet/contract/CBH3ATY3PU7MRK54BOLEHU2ANM67LXLALNR5TQP6MR44NFKOLLEFHRZW)
+* **Primary Repository:** [github.com/PulsePay-Agency/pulsepay](https://github.com/PulsePay-Agency/pulsepay)
 
-*   `/contracts`: The Soroban Rust smart contracts.
-*   `/packages/contract-client`: Auto-generated TypeScript bindings of the contract (Single Source of Truth).
-*   `/apps/frontend`: Next.js 15 App Router featuring Framer Motion UI and the high-performance ticker.
-*   `/apps/backend`: Express.js service for ingesting SEP-24 Anchor webhooks.
-*   `e2e/`: Playwright end-to-end tests for critical flows.
+## 🏗️ System Architecture
 
-## 🚀 Quick Start (Local Development)
+PulsePay uses a monorepo structure managed by Turborepo and pnpm workspaces:
 
-### 1. Prerequisites
-Ensure you have the following installed:
-*   [Node.js](https://nodejs.org/) (v18+)
-*   [pnpm](https://pnpm.io/) (v9+)
-*   [Rust](https://rustup.rs/) (with `wasm32-unknown-unknown` target)
-*   [Stellar CLI](https://developers.stellar.org/docs/build/smart-contracts/getting-started/setup)
+```text
+/apps
+  ├── frontend/         # Next.js 15 App Router interface (Passkey Auth, Live Stream UI)
+  └── backend/          # Express.js indexer & SEP-24 anchor event listener
+/packages
+  └── contract-client/  # Auto-generated TypeScript bindings for Soroban smart contracts
+/contracts
+  └── pulsepay-core/    # Soroban Rust smart contracts (Ledger timestamp math, vault lockup)
+/e2e/                   # Playwright end-to-end integration tests
+```
 
-### 2. Install Dependencies
-At the root of the repository, run:
+### Protocol Flow Topology
+
+```text
+┌──────────────────┐           ┌─────────────────────────────┐
+│  Employer Vault  │──────────►│   Soroban Smart Contract    │
+└──────────────────┘           │  CBH3ATY3...FHRZW (Testnet) │
+                               └──────────────┬──────────────┘
+                                              │
+                         Continuous Ledger-Timestamp Streaming
+                                              │
+                                              ▼
+┌──────────────────┐           ┌─────────────────────────────┐
+│ SEP-24 Local Cash│◄──────────│  Worker Biometric Withdrawal│
+│ (MoneyGram/Bank) │           │     (0.25% Protocol Fee)    │
+└──────────────────┘           └─────────────────────────────┘
+```
+
+## ⚡ Soroban Smart Contract Deployment
+
+| Parameter | Network Value |
+| --- | --- |
+| **Network** | Stellar Soroban Testnet |
+| **Contract ID** | `CBH3ATY3PU7MRK54BOLEHU2ANM67LXLALNR5TQP6MR44NFKOLLEFHRZW` |
+| **RPC Endpoint** | `https://soroban-testnet.stellar.org` |
+| **Network Passphrase** | `Test DF Network ; July 2015` |
+| **Anchor Off-Ramp Test Host** | `testanchor.stellar.org` |
+
+## 💻 Local Development Setup
+
+### Prerequisites
+
+* **Node.js:** v18.0.0 or higher
+* **pnpm:** v9.0.0 or higher
+* **Rust:** edition 2021 with target `wasm32-unknown-unknown`
+* **Stellar CLI:** v21.0.0 or higher
+
+### 1. Repository Installation
+
 ```bash
-# We use pnpm to manage the workspace
+git clone https://github.com/PulsePay-Agency/pulsepay.git
+cd pulsepay
 pnpm install
 ```
 
-### 3. Run the Smart Contract Tests
-Ensure the core Rust logic is sound before booting the UI:
+### 2. Verify Smart Contracts
+
+Run unit tests across the Rust Soroban contract suite:
+
 ```bash
-cd contracts
+cd contracts/pulsepay-core
 cargo test
 ```
 
-### 4. Start the Application
-Turborepo makes it incredibly easy to start the frontend and backend simultaneously. From the root directory:
+### 3. Launch Development Server
+
+Start both the frontend application and backend indexer concurrently:
+
 ```bash
-# This spins up both Next.js and the Express server
+# Executed from root directory
 pnpm dev
 ```
 
-*   **Frontend UI:** `http://localhost:3000`
-*   **Backend Webhooks:** `http://localhost:8080/health`
+* **Frontend:** `http://localhost:3000`
+* **Backend Health Check:** `http://localhost:8080/health`
 
-## 🧪 Running End-to-End Tests
-We use Playwright to ensure the UI flows don't regress.
+### 4. Run End-to-End Tests
+
 ```bash
-# Install browsers (first time only)
 pnpm --filter frontend exec playwright install --with-deps
-
-# Run the test suite
 pnpm --filter frontend test
 ```
 
-## 🌐 Testnet Configuration
-The app is currently configured to interface with the Stellar Testnet. 
+## 💧 Drips Wave Program Contributions
 
-**PulsePay Core Contract ID (Soroban Testnet):**
-```
-CBH3ATY3PU7MRK54BOLEHU2ANM67LXLALNR5TQP6MR44NFKOLLEFHRZW
-```
-- Contract interactions use `https://soroban-testnet.stellar.org`
-- SEP-24 Cashouts query `testanchor.stellar.org`
+PulsePay actively participates in the **Stellar Drips Wave Program**. Community developers can earn points and rewards by completing scoped issues on our project board.
 
-## ☁️ Public Hosting Topology
-The application infrastructure uses modern serverless platforms configured for production zero-downtime routing.
+### How to Contribute
 
-```text
-[User Browser]
-   │
-   ├──────► Frontend (Vercel) ──────────► Stellar Soroban RPC (Testnet)
-   │           │
-   │           └──────────► Backend / Indexer (Render / Railway)
-   │                            │
-   └────────────────────────────┴──────► PostgreSQL Database
-```
+1. Browse open issues on our [GitHub Issue Board](https://github.com/PulsePay-Agency/pulsepay/issues).
+2. Filter by labels such as `good first issue`, `frontend`, `contracts`, or `Drips Wave`.
+3. Apply directly for an issue on the [Drips Wave Portal](https://www.drips.network/wave/stellar).
+4. Once assigned, submit your pull request referencing the issue ID (`Closes #ISSUE_NUMBER`).
 
-## 📝 Drips Wave Grant Submission Payload
+Refer to [`CONTRIBUTING.md`](./CONTRIBUTING.md) for full style guidelines and code formatting standards.
 
-*   **Project Name:** PulsePay
-*   **One-Line Description:** Zero-Click Real-Time Global Payroll & Physical Cash-Out Protocol on Stellar
-*   **Monorepo / Contract Source:** `https://github.com/your-org/pulsepay`
-*   **Live Demo URL:** `https://pulsepay-app.vercel.app`
-*   **Protocol Documentation:** `https://docs.pulsepay.finance`
-*   **Testnet Explorer Deployment:** `https://stellar.expert/explorer/testnet/contract/CBH3ATY3PU7MRK54BOLEHU2ANM67LXLALNR5TQP6MR44NFKOLLEFHRZW`
-*   **Demo Video:** `https://youtube.com/watch?v=your-demo-id`
+## 👥 Maintainers
+
+| Name | Role | GitHub | Contact |
+| --- | --- | --- | --- |
+| **Oobayemi** | Lead Architect / Maintainer | [@Femology](https://github.com/Femology) | Telegram: `@Oobayemi` |
 
 ---
-*For contributors: Run `./seed_issues.sh` to initialize the project board with good first issues!*
+
+## 🤝 Contributors
+
+Thank you to everyone contributing to the PulsePay protocol!
+
+---
+
+## 📄 License
+
+This repository is licensed under the [Apache 2.0 License](./LICENSE).
